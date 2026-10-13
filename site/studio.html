@@ -1,211 +1,215 @@
-<title>Studio de films IA</title>
+<title>REDREDA AI Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap">
 <style>
-/* Layout: a screening table. The screen and its transport on the left, the production desk
-   (new film form) on the right, the screenplay typed in Courier below, then the film library. */
+/* Layout: REDREDA AI's night-sky shell. A compact intro, then the studio: the screen and its
+   transport on the left, the production desk on the right, the screenplay and film library below. */
 :root {
-  --paper: #e9ecf1;
-  --surface: #ffffff;
-  --surface-2: #f3f5f8;
-  --ink: #151922;
-  --muted: #586174;
-  --line: #d2d7e0;
-  --tungsten: #b8571a;
-  --tungsten-soft: #f6e3d4;
-  --on-tungsten: #ffffff;
-  --screen: #07080b;
-  --ok: #1f7a4d;
-  --warn: #8a5a00;
-  --warn-bg: #fbefd2;
-  --err: #b42318;
-  --err-bg: #fde4e1;
-  --display: "Big Shoulders Display", "Arial Narrow", "Helvetica Neue", sans-serif;
-  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-  --script: "Courier Prime", "Courier New", Courier, monospace;
-  --radius: 10px;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #11141a;
-    --surface: #191d26;
-    --surface-2: #1f2430;
-    --ink: #e8ebf1;
-    --muted: #9aa3b4;
-    --line: #2c3240;
-    --tungsten: #f0883e;
-    --tungsten-soft: #3a2616;
-    --on-tungsten: #1b0f05;
-    --screen: #050608;
-    --ok: #5fd39a;
-    --warn: #f3c25b;
-    --warn-bg: #3a2f14;
-    --err: #ff8a80;
-    --err-bg: #3b1a1a;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --paper: #11141a;
-  --surface: #191d26;
-  --surface-2: #1f2430;
-  --ink: #e8ebf1;
-  --muted: #9aa3b4;
-  --line: #2c3240;
-  --tungsten: #f0883e;
-  --tungsten-soft: #3a2616;
-  --on-tungsten: #1b0f05;
-  --screen: #050608;
-  --ok: #5fd39a;
-  --warn: #f3c25b;
-  --warn-bg: #3a2f14;
-  --err: #ff8a80;
-  --err-bg: #3b1a1a;
   color-scheme: dark;
+  --bg: #05070b;
+  --glass: rgba(255, 255, 255, 0.045);
+  --text: #f5f7fb;
+  --muted: #a6adbb;
+  --faint: #7e8898;
+  --accent: #a9d7ff;
+  --accent-strong: #74baff;
+  --on-accent: #07101a;
+  --line: rgba(255, 255, 255, 0.11);
+  --screen: #000000;
+  --ok: #7be3b0;
+  --warn: #ffd58a;
+  --warn-bg: rgba(255, 196, 92, 0.1);
+  --err: #ff9b93;
+  --err-bg: rgba(255, 110, 100, 0.1);
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --script: "Courier Prime", "Courier New", Courier, monospace;
+  --radius: 1.25rem;
 }
 
-* { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
+html { background: var(--bg); }
 body {
-  background: var(--paper);
-  color: var(--ink);
-  font: 15px/1.55 var(--body);
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.6 var(--body);
   padding-inline: 16px;
-  padding-block: 0 48px;
+  padding-block: 0 40px;
+  overflow-x: hidden;
 }
-.wrap { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+::selection { color: var(--on-accent); background: var(--accent); }
+button, input, textarea, select { font: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
-.masthead { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 24px; padding-top: 28px; }
-.masthead h1 {
-  margin: 0; font-family: var(--display); font-weight: 800; text-transform: uppercase;
-  font-size: clamp(2.2rem, 6vw, 3.6rem); line-height: 0.9; letter-spacing: 0.01em; text-wrap: balance;
+.sky-glow {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 18%, rgba(26, 67, 108, 0.28), transparent 42%),
+    radial-gradient(ellipse at 10% 70%, rgba(41, 75, 117, 0.12), transparent 34%),
+    linear-gradient(180deg, #070a10, #05070b 65%);
 }
-.masthead h1 span { color: var(--tungsten); }
-.masthead p { margin: 0; max-width: 52ch; color: var(--muted); }
+#galaxy { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.7; }
+.page { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
 
-.studio { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: 24px; align-items: start; }
-@media (max-width: 920px) { .studio { grid-template-columns: minmax(0, 1fr); } }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 18px; flex-wrap: wrap; }
+.brand { display: inline-flex; align-items: center; gap: 0.6rem; font: 700 1.1rem/1 var(--display); letter-spacing: -0.045em; }
+.brand-mark {
+  display: grid; place-items: center; min-width: 2rem; height: 2rem; padding: 0 0.4rem; border-radius: 0.55rem;
+  border: 1px solid rgba(169, 215, 255, 0.38); color: var(--accent); font-size: 0.8rem; letter-spacing: 0.02em;
+  background: linear-gradient(145deg, rgba(169, 215, 255, 0.18), rgba(169, 215, 255, 0.025));
+}
+.brand small { font: 500 0.85rem/1 var(--body); letter-spacing: 0; color: var(--muted); margin-left: 0.35rem; }
+.pill { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0.9rem; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 0.85rem; background: var(--glass); }
+.pill::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: var(--ok); box-shadow: 0 0 10px var(--ok); }
 
-/* Screen */
+.intro { display: grid; gap: 0.8rem; padding-top: 12px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 0.6rem; margin: 0; color: #c4dcf4; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
+.eyebrow::before { content: ""; width: 1.2rem; height: 1px; background: var(--accent); }
+.intro h1 { margin: 0; max-width: 18ch; font: 500 clamp(2.3rem, 6vw, 4.4rem)/0.98 var(--display); letter-spacing: -0.075em; text-wrap: balance; }
+.intro h1 span { color: var(--accent); text-shadow: 0 0 28px rgba(169, 215, 255, 0.35); }
+.intro p { margin: 0; max-width: 60ch; color: #b5bdc9; font-size: 1.05rem; }
+
+.studio, .lower { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+@media (max-width: 940px) { .studio, .lower { grid-template-columns: minmax(0, 1fr); } }
+
 .stage { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .screen {
-  position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 100%;
-  background: var(--screen); border-radius: 6px; overflow: hidden;
-  box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.6);
+  position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; background: var(--screen);
+  border-radius: 1rem; overflow: hidden; border: 1px solid var(--line);
+  box-shadow: 0 0 0 1px rgba(169, 215, 255, 0.06), 0 30px 80px -30px rgba(116, 186, 255, 0.35);
 }
-.screen.portrait { aspect-ratio: 9 / 16; width: min(100%, calc(72vh * 9 / 16)); margin-inline: auto; }
-.screen canvas { display: block; width: 100%; height: 100%; }
-.screen .bigplay {
-  position: absolute; left: 18px; bottom: 18px; width: 64px; height: 64px; border-radius: 50%;
-  border: 0; background: var(--tungsten); color: var(--on-tungsten); cursor: pointer;
-  display: grid; place-items: center; box-shadow: 0 6px 30px rgba(0, 0, 0, 0.45);
+.screen.portrait { aspect-ratio: 9 / 16; width: min(100%, calc(74vh * 9 / 16)); margin-inline: auto; }
+.screen canvas { display: block; width: 100%; height: 100%; cursor: pointer; }
+.bigplay {
+  position: absolute; left: 18px; bottom: 18px; width: 62px; height: 62px; border-radius: 50%; border: 0;
+  display: grid; place-items: center; cursor: pointer; color: var(--on-accent); background: #f5f8fc;
+  box-shadow: 0 8px 30px rgba(116, 186, 255, 0.35); transition: transform 0.2s ease, background 0.2s ease;
 }
-.screen .bigplay svg { width: 30px; height: 30px; margin-left: 4px; }
-.rec-badge {
-  position: absolute; top: 12px; left: 12px; padding: 3px 10px; border-radius: 4px;
-  background: #c62828; color: #fff; font: 600 12px/1.6 var(--body); letter-spacing: 0.08em;
-}
+.bigplay:hover { transform: translateY(-2px); background: var(--accent); }
+.bigplay svg { width: 26px; height: 26px; margin-left: 3px; }
+@media (max-width: 600px) { .bigplay { width: 44px; height: 44px; left: 10px; bottom: 10px; } .bigplay svg { width: 18px; height: 18px; } }
+.rec-badge { position: absolute; top: 12px; left: 12px; padding: 3px 10px; border-radius: 999px; background: #d93a3a; color: #fff; font: 600 12px/1.6 var(--body); letter-spacing: 0.08em; }
+.drawing-badge { position: absolute; top: 12px; right: 12px; padding: 4px 12px; border-radius: 999px; background: rgba(5, 7, 11, 0.72); border: 1px solid var(--line); color: var(--accent); font: 600 12px/1.6 var(--body); }
 
+.scrub { width: 100%; accent-color: var(--accent-strong); }
 .transport { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .transport .spacer { flex: 1; }
 .timecode {
-  font: 700 15px/1 var(--script); font-variant-numeric: tabular-nums; letter-spacing: 0.04em;
-  padding: 8px 10px; border-radius: 6px; background: var(--surface); border: 1px solid var(--line);
+  font: 700 0.92rem/1 var(--script); font-variant-numeric: tabular-nums; letter-spacing: 0.04em;
+  padding: 0.6rem 0.8rem; border-radius: 999px; background: var(--glass); border: 1px solid var(--line); color: #dbe9f8;
 }
 .tbtn {
-  display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 6px;
-  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
-  font: 500 14px/1 var(--body); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.55rem 0.95rem; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--glass); color: var(--text); font-size: 0.9rem; font-weight: 500; cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
+.tbtn:hover { border-color: rgba(169, 215, 255, 0.45); background: rgba(169, 215, 255, 0.07); }
 .tbtn svg { width: 16px; height: 16px; }
-.tbtn[aria-pressed="false"] { color: var(--muted); }
-.tbtn[aria-pressed="false"] .on { display: none; }
-.tbtn[aria-pressed="true"] .off { display: none; }
-.tbtn.rec { border-color: var(--tungsten); color: var(--tungsten); }
-.tbtn:disabled { opacity: 0.5; cursor: not-allowed; }
-.scrub { width: 100%; accent-color: var(--tungsten); }
+.tbtn[aria-pressed="false"] { color: var(--faint); }
+.tbtn[aria-pressed="false"] .on, .tbtn[aria-pressed="true"] .off { display: none; }
+.tbtn.rec { color: #ffb4ad; border-color: rgba(255, 140, 130, 0.4); }
+.tbtn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-.strip { display: flex; gap: 6px; overflow-x: auto; padding: 8px; background: var(--screen); border-radius: 6px; }
-.strip button {
-  flex: 0 0 auto; position: relative; padding: 0; border: 2px solid transparent; border-radius: 3px;
-  background: none; cursor: pointer; line-height: 0;
-}
-.strip button[aria-current="true"] { border-color: var(--tungsten); }
-.strip canvas { width: 104px; height: auto; border-radius: 2px; }
-.strip.portrait canvas { width: 54px; }
-.strip span {
-  position: absolute; left: 4px; bottom: 4px; font: 700 11px/1.2 var(--script); color: #fff;
-  background: rgba(0, 0, 0, 0.6); padding: 1px 4px; border-radius: 2px;
-}
-.note { margin: 0; font-size: 13px; color: var(--muted); }
+.strip { display: flex; gap: 8px; overflow-x: auto; padding: 8px; border-radius: 0.9rem; background: rgba(0, 0, 0, 0.45); border: 1px solid var(--line); }
+.strip button { flex: 0 0 auto; position: relative; padding: 0; border: 2px solid transparent; border-radius: 0.5rem; background: none; cursor: pointer; line-height: 0; overflow: hidden; }
+.strip button[aria-current="true"] { border-color: var(--accent); }
+.strip canvas { width: 112px; height: auto; }
+.strip.portrait canvas { width: 58px; }
+.strip span { position: absolute; left: 5px; bottom: 5px; font: 700 11px/1.3 var(--script); color: #fff; background: rgba(0, 0, 0, 0.62); padding: 1px 5px; border-radius: 4px; }
+.strip .pending::after { content: "Dessin…"; position: absolute; inset: 0; display: grid; place-items: center; font: 600 11px/1 var(--body); color: var(--accent); background: rgba(5, 7, 11, 0.55); }
+.note { margin: 0; font-size: 0.85rem; color: var(--faint); }
 
-/* Desk */
-.desk { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-.desk h2, .section-title {
-  margin: 0; font-family: var(--display); font-weight: 700; text-transform: uppercase;
-  font-size: 1.6rem; letter-spacing: 0.02em; line-height: 1;
+.card {
+  position: relative; border: 1px solid var(--line); border-radius: var(--radius); padding: 1.4rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.018)); min-width: 0;
 }
-.field { display: flex; flex-direction: column; gap: 6px; }
-.field > span { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-textarea, select {
-  width: 100%; background: var(--surface-2); color: var(--ink); border: 1px solid var(--line);
-  border-radius: 6px; padding: 9px 11px; font: inherit;
+.desk { display: flex; flex-direction: column; gap: 1rem; }
+.card-kicker { display: block; color: var(--accent); font: 600 0.78rem/1.4 var(--body); letter-spacing: 0.14em; text-transform: uppercase; }
+.card-title { margin: 0.2rem 0 0; font: 500 1.7rem/1.1 var(--display); letter-spacing: -0.05em; }
+.field { display: flex; flex-direction: column; gap: 0.4rem; }
+.field > span { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+textarea, select { width: 100%; color: var(--text); background: rgba(0, 0, 0, 0.35); border: 1px solid var(--line); border-radius: 0.8rem; padding: 0.65rem 0.8rem; }
+select option { background: #0c1018; color: var(--text); }
+textarea { resize: vertical; min-height: 6rem; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.8rem; }
+input[type="range"] { width: 100%; accent-color: var(--accent-strong); }
+.button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.9rem; padding: 0 1.25rem;
+  border: 1px solid transparent; border-radius: 999px; cursor: pointer; font-weight: 600; font-size: 0.95rem;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
-textarea { resize: vertical; min-height: 92px; }
-textarea:focus-visible, select:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--tungsten); outline-offset: 2px; }
-.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
-input[type="range"] { width: 100%; accent-color: var(--tungsten); }
-.primary {
-  border: 0; border-radius: 6px; padding: 12px 16px; background: var(--tungsten); color: var(--on-tungsten);
-  font: 600 15px/1 var(--body); cursor: pointer;
-}
-.primary:disabled { opacity: 0.55; cursor: progress; }
-.secondary { border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; background: none; color: var(--ink); font: 500 14px/1 var(--body); cursor: pointer; }
-.status { display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line); }
-.status strong { font-weight: 600; }
-.status .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.msg { padding: 10px 12px; border-radius: 6px; font-size: 14px; }
+.button:hover { transform: translateY(-2px); }
+.button:disabled { opacity: 0.45; cursor: default; transform: none; }
+.button-primary { color: var(--on-accent); background: #f5f8fc; box-shadow: 0 8px 30px rgba(228, 241, 255, 0.1); }
+.button-primary:hover { background: var(--accent); box-shadow: 0 8px 32px rgba(116, 186, 255, 0.25); }
+.button-quiet { color: var(--text); background: var(--glass); border-color: var(--line); }
+
+.progress { display: flex; flex-direction: column; gap: 0.7rem; padding: 1rem; border-radius: 1rem; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--line); }
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.45rem; }
+.steps li { display: flex; align-items: center; gap: 0.6rem; color: var(--faint); font-size: 0.92rem; }
+.steps li::before { content: ""; flex: 0 0 auto; width: 0.6rem; height: 0.6rem; border-radius: 50%; border: 1px solid var(--faint); }
+.steps li[data-state="active"] { color: var(--text); }
+.steps li[data-state="active"]::before { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 12px var(--accent); animation: pulse 1.4s ease-in-out infinite; }
+.steps li[data-state="done"] { color: var(--muted); }
+.steps li[data-state="done"]::before { border-color: var(--ok); background: var(--ok); }
+.steps li .count { margin-left: auto; font: 700 0.85rem/1 var(--script); color: var(--accent); }
+@keyframes pulse { 50% { opacity: 0.4; } }
+.msg { padding: 0.75rem 0.9rem; border-radius: 0.8rem; font-size: 0.92rem; }
 .msg.warn { background: var(--warn-bg); color: var(--warn); }
 .msg.err { background: var(--err-bg); color: var(--err); }
-.msg.ok { background: var(--surface-2); color: var(--ok); border: 1px solid var(--line); }
+.msg.ok { background: rgba(123, 227, 176, 0.08); color: var(--ok); }
 
-/* Screenplay page */
-.lower { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: 24px; align-items: start; }
-@media (max-width: 920px) { .lower { grid-template-columns: minmax(0, 1fr); } }
-.script {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
-  padding: clamp(20px, 5vw, 56px) clamp(16px, 7vw, 84px); font: 16px/1.5 var(--script); min-width: 0;
-}
-.script .eyebrow { font: 600 12px/1 var(--body); text-transform: uppercase; letter-spacing: 0.12em; color: var(--tungsten); margin: 0 0 18px; text-align: center; }
-.script h3 { margin: 0; text-align: center; text-transform: uppercase; font: 700 18px/1.3 var(--script); text-wrap: balance; }
-.script .logline { text-align: center; font-style: italic; color: var(--muted); margin: 8px auto 32px; max-width: 46ch; }
-.shot { margin-bottom: 26px; }
-.shot .slug { font-weight: 700; text-transform: uppercase; display: flex; gap: 12px; justify-content: space-between; }
-.shot .slug small { font-weight: 400; color: var(--muted); white-space: nowrap; }
-.shot .action { margin: 8px 0 0; }
-.shot .cue { margin: 14px 0 0; text-align: center; text-transform: uppercase; }
-.shot .dialogue { margin: 2px auto 0; max-width: 36ch; }
+.script { font: 1rem/1.55 var(--script); color: #e6ecf5; padding: clamp(1.4rem, 4vw, 3rem) clamp(1rem, 6vw, 4.5rem); }
+.script .card-kicker { text-align: center; margin-bottom: 1rem; }
+.script h3 { margin: 0; text-align: center; text-transform: uppercase; font: 700 1.15rem/1.3 var(--script); text-wrap: balance; }
+.script .logline { text-align: center; font-style: italic; color: var(--muted); margin: 0.5rem auto 1.4rem; max-width: 46ch; }
+.cast { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 2rem; }
+.cast span { font: 500 0.82rem/1.3 var(--body); padding: 0.35rem 0.7rem; border-radius: 999px; border: 1px solid var(--line); background: var(--glass); color: #cfe3f7; max-width: 100%; }
+.shot { margin-bottom: 1.6rem; }
+.shot .slug { font-weight: 700; text-transform: uppercase; display: flex; gap: 0.75rem; justify-content: space-between; align-items: baseline; }
+.shot .slug small { font-weight: 400; color: var(--faint); white-space: nowrap; }
+.shot .action { margin: 0.4rem 0 0; color: #c9d2de; }
+.shot .cue { margin: 0.8rem 0 0; text-align: center; text-transform: uppercase; }
+.shot .dialogue { margin: 0.1rem auto 0; max-width: 36ch; }
+.shot .redraw { margin-top: 0.6rem; font: 500 0.82rem/1 var(--body); color: var(--accent); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 0.45rem 0.8rem; cursor: pointer; }
+.shot .redraw:disabled { opacity: 0.45; cursor: default; }
+.shot .art-error { display: block; margin-top: 0.5rem; font: 0.82rem/1.4 var(--body); color: var(--warn); }
 
-.library { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-.films { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-.films li { display: flex; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
-.films li[aria-current="true"] { border-color: var(--tungsten); }
-.films .open { flex: 1; min-width: 0; text-align: left; background: none; border: 0; padding: 0; color: var(--ink); cursor: pointer; font: inherit; }
-.films .open strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.films .open small { color: var(--muted); }
-.films .del { background: none; border: 0; color: var(--muted); cursor: pointer; font: 13px var(--body); padding: 4px; }
+.library { display: flex; flex-direction: column; gap: 0.8rem; min-width: 0; }
+.films { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.films li { display: flex; gap: 0.6rem; align-items: center; padding: 0.7rem 0.9rem; border-radius: 0.9rem; border: 1px solid var(--line); background: rgba(0, 0, 0, 0.3); }
+.films li[aria-current="true"] { border-color: rgba(169, 215, 255, 0.5); background: rgba(169, 215, 255, 0.06); }
+.films .open { flex: 1; min-width: 0; text-align: left; background: none; border: 0; padding: 0; color: var(--text); cursor: pointer; }
+.films .open strong { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.films .open small { color: var(--faint); }
+.films .del { background: none; border: 0; color: var(--faint); cursor: pointer; font-size: 0.82rem; padding: 0.25rem; }
 .films .del.confirm { color: var(--err); font-weight: 600; }
-.tag { font: 600 11px/1 var(--body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--tungsten); background: var(--tungsten-soft); padding: 4px 6px; border-radius: 3px; }
+.tag { font: 600 0.7rem/1 var(--body); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(169, 215, 255, 0.35); padding: 0.3rem 0.5rem; border-radius: 999px; }
 
-@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+.footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.6rem; padding-top: 1.2rem; border-top: 1px solid var(--line); color: var(--faint); font-size: 0.88rem; }
+.footer strong { color: #c3cbd5; font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
 </style>
 
-<div class="wrap">
-  <header class="masthead">
-    <h1>Studio de films <span>IA</span></h1>
-    <p>Écrivez une idée en une phrase. Claude écrit le scénario, puis le film est dessiné, narré, mis en musique et monté ici même, dans votre navigateur.</p>
+<div class="sky-glow" aria-hidden="true"></div>
+<canvas id="galaxy" aria-hidden="true"></canvas>
+
+<div class="page">
+  <header class="topbar">
+    <span class="brand"><span class="brand-mark" aria-hidden="true">AI</span>REDREDA<small>Studio</small></span>
+    <span class="pill">Films d'animation écrits et dessinés par l'IA</span>
   </header>
+
+  <section class="intro" aria-labelledby="introTitle">
+    <p class="eyebrow">Studio vidéo</p>
+    <h1 id="introTitle">Une idée. <span>Un film animé.</span></h1>
+    <p>Décrivez votre histoire en une phrase. REDREDA AI écrit le scénario, crée les personnages, dessine chaque plan, puis anime, narre, met en musique et monte le film devant vous.</p>
+  </section>
 
   <div class="studio">
     <section class="stage" aria-label="Écran">
@@ -215,6 +219,7 @@ input[type="range"] { width: 100%; accent-color: var(--tungsten); }
           <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15l13-7.5z"/></svg>
         </button>
         <span class="rec-badge" id="recBadge" hidden>● ENREGISTREMENT</span>
+        <span class="drawing-badge" id="drawingBadge" hidden></span>
       </div>
       <input class="scrub" id="scrub" type="range" min="0" max="1000" value="0" aria-label="Position dans le film">
       <div class="transport">
@@ -245,27 +250,38 @@ input[type="range"] { width: 100%; accent-color: var(--tungsten); }
       <p class="note" id="recordNote">L'enregistrement rejoue le film et en fait un fichier vidéo avec l'image, les sous-titres et la musique. La voix de lecture du navigateur ne peut pas être incluse dans le fichier.</p>
     </section>
 
-    <aside class="desk" aria-labelledby="deskTitle">
-      <h2 id="deskTitle">Nouveau film</h2>
-      <div class="msg warn" id="noClaude" hidden>Claude n'est pas disponible dans cette vue. Ouvrez la page depuis claude.ai, connecté à votre compte, pour écrire de nouveaux films. Le film d'exemple reste lisible.</div>
+    <aside class="card desk" aria-labelledby="deskTitle">
+      <div>
+        <span class="card-kicker">Nouveau film</span>
+        <h2 class="card-title" id="deskTitle">Racontez votre histoire</h2>
+      </div>
+      <div class="msg warn" id="noClaude" hidden>L'IA n'est pas disponible dans cette vue. Ouvrez la page depuis claude.ai, connecté à votre compte, pour créer de nouveaux films. Le film d'exemple reste lisible.</div>
       <form id="form" novalidate>
-        <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;flex-direction:column;gap:0.9rem">
           <label class="field">
             <span>Votre idée</span>
-            <textarea id="idea" maxlength="1500" placeholder="Ex. : Une vieille gardienne de phare reçoit une lettre écrite il y a cinquante ans."></textarea>
+            <textarea id="idea" maxlength="1500" placeholder="Ex. : Une petite renarde courageuse traverse la forêt enneigée pour rapporter une lanterne à son grand-père."></textarea>
           </label>
           <div class="pair">
             <label class="field">
-              <span>Style</span>
-              <select id="style">
-                <option>cinématique</option>
+              <span>Dessin</span>
+              <select id="art">
+                <option value="cartoon">Cartoon cinéma</option>
+                <option value="anime">Anime japonais</option>
+                <option value="storybook">Livre d'images</option>
+                <option value="comic">Bande dessinée</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Genre</span>
+              <select id="genre">
+                <option>aventure</option>
                 <option>conte pour enfants</option>
-                <option>documentaire</option>
-                <option>science-fiction</option>
-                <option>film noir</option>
-                <option>horreur</option>
                 <option>comédie</option>
-                <option>poème visuel</option>
+                <option>émotion</option>
+                <option>science-fiction</option>
+                <option>mystère</option>
+                <option>horreur douce</option>
               </select>
             </label>
             <label class="field">
@@ -282,10 +298,6 @@ input[type="range"] { width: 100%; accent-color: var(--tungsten); }
               </select>
             </label>
             <label class="field">
-              <span>Plans : <output id="shotsOut">5</output></span>
-              <input id="shots" type="range" min="3" max="8" value="5">
-            </label>
-            <label class="field">
               <span>Format</span>
               <select id="aspect">
                 <option value="16:9">Paysage 16:9</option>
@@ -293,68 +305,49 @@ input[type="range"] { width: 100%; accent-color: var(--tungsten); }
               </select>
             </label>
           </div>
-          <button class="primary" id="create" type="submit">Créer le film</button>
+          <label class="field">
+            <span>Plans : <output id="shotsOut">5</output></span>
+            <input id="shots" type="range" min="3" max="8" value="5">
+          </label>
+          <button class="button button-primary" id="create" type="submit">Créer le film</button>
         </div>
       </form>
-      <div class="status" id="status" hidden aria-live="polite">
-        <div class="row"><strong id="statusText">Claude écrit le scénario…</strong><span class="timecode" id="elapsed">0 s</span></div>
-        <span class="note">Comptez de 20 secondes à une minute.</span>
-        <button class="secondary" id="stop" type="button">Arrêter</button>
+      <div class="progress" id="progress" hidden aria-live="polite">
+        <ol class="steps">
+          <li id="stepScript">Écriture du scénario et des personnages <span class="count" id="elapsed"></span></li>
+          <li id="stepArt">Dessin des plans <span class="count" id="artCount"></span></li>
+        </ol>
+        <p class="note">Le scénario prend environ une minute, puis chaque plan est dessiné à son tour. Vous pouvez lancer la lecture pendant le dessin.</p>
+        <button class="button button-quiet" id="stop" type="button">Arrêter</button>
       </div>
       <div class="msg" id="message" hidden role="status"></div>
+      <p class="note">Les personnages et les décors sont dessinés par l'IA pour chaque film. Les vidéos photoréalistes demandent un service de génération vidéo payant et ne sont pas disponibles sur cette page.</p>
     </aside>
   </div>
 
   <div class="lower">
-    <article class="script" id="script" aria-label="Scénario"></article>
+    <article class="card script" id="script" aria-label="Scénario"></article>
     <section class="library" aria-labelledby="libTitle">
-      <h2 class="section-title" id="libTitle">Mes films</h2>
+      <div>
+        <span class="card-kicker">Bibliothèque</span>
+        <h2 class="card-title" id="libTitle">Mes films</h2>
+      </div>
       <ul class="films" id="films"></ul>
       <p class="note">Vos films sont gardés dans ce navigateur.</p>
     </section>
   </div>
+
+  <footer class="footer">
+    <span><strong>REDREDA AI</strong> · Studio</span>
+    <span>Scénario, personnages et dessins créés par l'IA, montage dans votre navigateur.</span>
+  </footer>
 </div>
 
 <script>
 (() => {
 "use strict";
 
-// ------------------------------------------------------------------ données
-
-const EXAMPLE = {
-  id: "exemple",
-  example: true,
-  aspect: "16:9",
-  style: "conte pour enfants",
-  title: "Le Dernier Jardin",
-  logline: "Dans une ville abandonnée, un petit robot jardinier part à la recherche de la dernière fleur du monde.",
-  language: "fr",
-  scenes: [
-    { heading: "EXT. VILLE ABANDONNÉE — AUBE", setting: "city", camera: "zoom_in", colors: ["#1d2b64", "#f8cdda", "#ffb347"], duration_seconds: 6,
-      action: "Les tours vides s'allument une à une sous le premier soleil.",
-      narration: "Dans la ville silencieuse, un petit robot jardinier se réveille. Depuis cent ans, il arrose des pots vides." },
-    { heading: "EXT. FORÊT DE BÉTON — MATIN", setting: "forest", camera: "pan_left", colors: ["#134e5e", "#71b280", "#f6f7c4"], duration_seconds: 6,
-      action: "Le robot traverse une forêt qui a poussé entre les ruines.",
-      narration: "Un matin, un parfum inconnu traverse la brume. Le robot quitte la ville pour la première fois." },
-    { heading: "EXT. MONTAGNES — MIDI", setting: "mountains", camera: "zoom_out", colors: ["#3a6186", "#89253e", "#ffd194"], duration_seconds: 6,
-      action: "Au sommet, le vent soulève la poussière dorée.",
-      narration: "Il grimpe des jours entiers. Ses roues grincent, mais le parfum devient plus fort à chaque pas." },
-    { heading: "EXT. BORD DE MER — CRÉPUSCULE", setting: "sea", camera: "pan_right", colors: ["#2c3e50", "#fd746c", "#ffd200"], duration_seconds: 6,
-      action: "Sur la falaise, une seule fleur rouge tremble face à l'océan.",
-      narration: "Au bord de la mer, il la trouve enfin : une fleur, une seule, qui l'attendait." },
-    { heading: "EXT. CIEL ÉTOILÉ — NUIT", setting: "space", camera: "static", colors: ["#000428", "#004e92", "#c471ed"], duration_seconds: 7,
-      action: "Le robot veille la fleur sous un ciel immense.",
-      narration: "Cette nuit-là, le robot ne rentre pas. Il s'assoit, et pour la première fois, il a quelque chose à protéger." },
-  ],
-};
-
-const SETTINGS = ["city", "sea", "forest", "mountains", "space"];
-const CAMERAS = ["zoom_in", "zoom_out", "pan_left", "pan_right", "static"];
-const END_TITLES = { fr: "Fin", es: "Fin", it: "Fine", de: "Ende", pt: "Fim", ar: "النهاية", en: "The End" };
-const FPS = 24, TITLE_S = 4, END_S = 3.5, FADE_S = 0.5;
-const STORE_KEY = "studio-films-ia-v1";
-
-// ------------------------------------------------------------------ outils
+// ================================================================== outils
 
 const $ = (id) => document.getElementById(id);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -362,6 +355,7 @@ const ease = (t) => t * t * (3 - 2 * t);
 const hexToRgb = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
 const mix = (a, b, t) => a.map((x, i) => Math.round(x + (b[i] - x) * t));
 const rgb = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function hash(str) {
   let h = 2166136261;
@@ -378,12 +372,8 @@ function rng(seed) {
   };
 }
 const uni = (r, a, b) => a + (b - a) * r();
-
-function makeCanvas(w, h) {
-  const c = document.createElement("canvas");
-  c.width = w; c.height = h;
-  return c;
-}
+function makeCanvas(w, h) { const c = document.createElement("canvas"); c.width = w; c.height = h; return c; }
+function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
 
 function wrapLines(ctx, text, maxWidth) {
   const words = String(text).split(/\s+/).filter(Boolean);
@@ -396,7 +386,6 @@ function wrapLines(ctx, text, maxWidth) {
   if (cur) lines.push(cur);
   return lines;
 }
-
 function splitSentences(text, maxChars = 80) {
   const out = [];
   for (const sentence of String(text).trim().split(/(?<=[.!?…؟])\s+/)) {
@@ -409,138 +398,306 @@ function splitSentences(text, maxChars = 80) {
   return out;
 }
 
-// ------------------------------------------------------------------ peinture des décors
+// ================================================================== fond galaxie
+
+(() => {
+  const c = $("galaxy"), g = c.getContext("2d");
+  const colors = ["#ffffff", "#dceeff", "#a9d7ff", "#ffe8d1"];
+  let W = 0, H = 0, R = 0, stars = [], last = 0, frame = 0, time = 0;
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    W = innerWidth; H = innerHeight;
+    c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    R = Math.max(W, H) * 0.55;
+    const n = Math.min(520, Math.max(200, Math.round((W * H) / 2600)));
+    stars = Array.from({ length: n }, () => {
+      const d = Math.pow(Math.random(), 1.5) * R;
+      return {
+        d, a: Math.floor(Math.random() * 2) * Math.PI + d * 0.012 + ((Math.random() - 0.5) * (40 + d * 0.1)) / R,
+        s: Math.random() * 1.3 + 0.35, col: colors[Math.floor(Math.random() * colors.length)],
+        v: 0.00004 + (1 - d / R) * 0.0001, p: Math.random() * 6.28, tw: 0.5 + Math.random() * 1.5,
+      };
+    });
+    paint(0);
+  }
+  function paint(dt) {
+    g.clearRect(0, 0, W, H);
+    for (const s of stars) {
+      if (!reduceMotion) s.a -= s.v * dt;
+      g.globalAlpha = reduceMotion ? 0.7 : 0.4 + 0.45 * (0.5 + 0.5 * Math.sin(time * s.tw + s.p));
+      g.fillStyle = s.col;
+      g.beginPath();
+      g.arc(W / 2 + Math.cos(s.a) * s.d, H * 0.3 + Math.sin(s.a) * s.d * 0.6, s.s, 0, 6.283);
+      g.fill();
+    }
+    g.globalAlpha = 1;
+  }
+  function loop(now) {
+    if (document.hidden) { frame = 0; return; }
+    const dt = last ? Math.min(now - last, 40) : 16;
+    last = now; time += dt / 1000;
+    paint(dt);
+    frame = requestAnimationFrame(loop);
+  }
+  addEventListener("resize", resize, { passive: true });
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && !frame && !reduceMotion) { last = 0; frame = requestAnimationFrame(loop); }
+  });
+  resize();
+  if (!reduceMotion) frame = requestAnimationFrame(loop);
+})();
+
+// ================================================================== film d'exemple (dessins vectoriels)
+
+function svgDoc(body, defs = "") {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900"><defs>${defs}</defs>${body}</svg>`;
+}
+function robot(x, y, s, arm = true) {
+  return `<g transform="translate(${x} ${y}) scale(${s})">
+  <ellipse cx="0" cy="4" rx="95" ry="14" fill="#000" opacity=".25"/>
+  <rect x="-72" y="-52" width="144" height="52" rx="26" fill="#39404f"/>
+  <circle cx="-44" cy="-26" r="17" fill="#5d6678" stroke="#272c37" stroke-width="5"/><circle cx="0" cy="-26" r="17" fill="#5d6678" stroke="#272c37" stroke-width="5"/><circle cx="44" cy="-26" r="17" fill="#5d6678" stroke="#272c37" stroke-width="5"/>
+  <rect x="-62" y="-176" width="124" height="130" rx="30" fill="url(#rbody)" stroke="#b9541a" stroke-width="5"/>
+  <rect x="-36" y="-146" width="72" height="52" rx="14" fill="#ffe4c7" opacity=".9"/>
+  <path d="M0 -104 C -18 -118 -16 -136 0 -138 C 16 -136 18 -118 0 -104Z" fill="#4caf7a"/><path d="M0 -104 L0 -134" stroke="#2f7d52" stroke-width="3"/>
+  <rect x="-12" y="-198" width="24" height="26" fill="#5d6678"/>
+  ${arm ? `<path d="M48 -140 Q 86 -150 104 -122" stroke="#d8641f" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <g transform="translate(104 -122)"><rect x="-6" y="-30" width="50" height="38" rx="9" fill="#4caf7a"/><rect x="-6" y="-30" width="50" height="10" rx="5" fill="#6fd09a"/><path d="M42 -18 L72 -40" stroke="#4caf7a" stroke-width="9" stroke-linecap="round"/><circle cx="74" cy="-42" r="8" fill="#6fd09a"/><path d="M4 -30 Q 18 -54 34 -30" stroke="#2f7d52" stroke-width="6" fill="none"/>
+  <path d="M80 -34 q 6 16 -2 30 M86 -40 q 12 14 8 32" stroke="#9fe3ff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".8"/></g>`
+  : `<path d="M48 -140 Q 70 -110 60 -80" stroke="#d8641f" stroke-width="16" stroke-linecap="round" fill="none"/>`}
+  <path d="M-48 -140 Q -76 -112 -66 -82" stroke="#d8641f" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <rect x="-80" y="-312" width="160" height="120" rx="36" fill="url(#rhead)" stroke="#b9541a" stroke-width="5"/>
+  <rect x="-60" y="-292" width="120" height="74" rx="26" fill="#1b2232"/>
+  <circle cx="-18" cy="-258" r="16" fill="#7ff3ff"/><circle cx="32" cy="-258" r="16" fill="#7ff3ff"/>
+  <circle cx="-13" cy="-264" r="5" fill="#fff"/><circle cx="37" cy="-264" r="5" fill="#fff"/>
+  <path d="M-4 -234 Q 8 -224 22 -234" stroke="#7ff3ff" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M0 -312 L12 -352" stroke="#5d6678" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="13" cy="-360" r="24" fill="#ffe66d" opacity=".3"/><circle cx="13" cy="-360" r="12" fill="#ffe66d"/>
+</g>`;
+}
+const ROBOT_DEFS = `<linearGradient id="rbody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffab52"/><stop offset="1" stop-color="#e2681e"/></linearGradient>
+<linearGradient id="rhead" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc178"/><stop offset="1" stop-color="#f07b28"/></linearGradient>`;
+function flower(x, y, s, glow) {
+  return `<g transform="translate(${x} ${y}) scale(${s})">
+  ${glow ? `<circle cx="0" cy="-150" r="90" fill="#ff6b6b" opacity=".18"/>` : ""}
+  <ellipse cx="0" cy="4" rx="40" ry="8" fill="#000" opacity=".2"/>
+  <path d="M0 0 C -8 -60 10 -100 0 -140" stroke="#3f8f4f" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M-2 -60 C -50 -80 -60 -40 -4 -48Z" fill="#4fae62"/><path d="M2 -90 C 50 -110 58 -70 4 -78Z" fill="#4fae62"/>
+  ${[0, 72, 144, 216, 288].map((a) => `<ellipse cx="0" cy="-172" rx="18" ry="32" fill="#e8434f" transform="rotate(${a} 0 -150)"/>`).join("")}
+  <circle cx="0" cy="-150" r="16" fill="#ffd34d"/><circle cx="-5" cy="-155" r="5" fill="#fff3b0"/>
+</g>`;
+}
+const skyDefs = (id, stops) => `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">${stops.map(([o, c]) => `<stop offset="${o}" stop-color="${c}"/>`).join("")}</linearGradient>`;
+const glowDefs = (id, c) => `<radialGradient id="${id}"><stop offset="0" stop-color="${c}" stop-opacity=".95"/><stop offset=".3" stop-color="${c}" stop-opacity=".45"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient>`;
+
+function exampleCity() {
+  const r = rng(11);
+  let far = "", mid = "", win = "";
+  for (let x = -20; x < 1620;) { const w = 60 + r() * 90, h = 180 + r() * 260; far += `<rect x="${x | 0}" y="${(620 - h) | 0}" width="${w | 0}" height="${(h + 300) | 0}" fill="#9a7a9f" opacity=".55"/>`; x += w + 8; }
+  for (let x = -30; x < 1620;) {
+    const w = 90 + r() * 120, h = 150 + r() * 250, y = 720 - h;
+    mid += `<rect x="${x | 0}" y="${y | 0}" width="${w | 0}" height="${(h + 200) | 0}" rx="4" fill="#4a3b5c"/><rect x="${x | 0}" y="${y | 0}" width="${(w * 0.18) | 0}" height="${(h + 200) | 0}" fill="#5a4a6d"/>`;
+    for (let wy = y + 22; wy < 690; wy += 34) for (let wx = x + 16; wx < x + w - 20; wx += 26) if (r() < 0.33) win += `<rect x="${wx | 0}" y="${wy | 0}" width="12" height="18" rx="2" fill="#ffd59a" opacity="${(0.5 + r() * 0.5).toFixed(2)}"/>`;
+    x += w + 14;
+  }
+  const vines = `<path d="M210 760 C 230 640 180 560 220 470 C 240 420 230 380 250 340" stroke="#3f8f4f" stroke-width="7" fill="none"/>` +
+    [[222, 690], [208, 610], [226, 530], [236, 450], [246, 380]].map(([x, y], i) => `<ellipse cx="${x + (i % 2 ? -16 : 16)}" cy="${y}" rx="18" ry="9" fill="#4fae62" transform="rotate(${i % 2 ? 30 : -30} ${x} ${y})"/>`).join("");
+  const pots = [790, 890, 990].map((x) => `<path d="M${x - 34} 744 L${x + 34} 744 L${x + 26} 800 L${x - 26} 800Z" fill="#b5653a"/><rect x="${x - 40}" y="734" width="80" height="16" rx="5" fill="#c97a4b"/><ellipse cx="${x}" cy="740" rx="30" ry="5" fill="#4a2f22"/>`).join("");
+  const bg = svgDoc(`<rect width="1600" height="900" fill="url(#sky)"/>
+<circle cx="1120" cy="430" r="300" fill="url(#sun)"/><circle cx="1120" cy="430" r="72" fill="#fff1d0"/>
+${far}${mid}${win}${vines}
+<path d="M0 730 L1600 712 L1600 900 L0 900Z" fill="#2c2436"/><path d="M0 820 L1600 806" stroke="#3d3349" stroke-width="6"/>
+${[120, 420, 1180, 1420].map((x) => `<rect x="${x}" y="840" width="90" height="8" rx="4" fill="#5a4d66"/>`).join("")}
+${pots}`, skyDefs("sky", [[0, "#1d2b64"], [0.55, "#c98bb0"], [1, "#ffd4a3"]]) + glowDefs("sun", "#ffcf8a"));
+  return { bg, fg: svgDoc(robot(640, 800, 1.0, true), ROBOT_DEFS) };
+}
+
+function exampleForest() {
+  const r = rng(22);
+  const hill = (y, amp, col, seed) => {
+    const rr = rng(seed); let d = `M0 900 L0 ${y}`;
+    for (let x = 0; x <= 1600; x += 80) d += ` L${x} ${(y - Math.sin(x / 260 + rr() * 0.6) * amp - rr() * amp * 0.4) | 0}`;
+    return `<path d="${d} L1600 900Z" fill="${col}"/>`;
+  };
+  const pines = (n, y0, h0, col, seed) => {
+    const rr = rng(seed); let s = "";
+    for (let i = 0; i < n; i++) {
+      const x = rr() * 1700 - 50, h = h0 * (0.7 + rr() * 0.6), w = h * 0.42, y = y0 + rr() * 30;
+      s += `<path d="M${x | 0} ${(y - h) | 0} L${(x - w / 2) | 0} ${(y - h * 0.3) | 0} L${(x - w * 0.22) | 0} ${(y - h * 0.32) | 0} L${(x - w * 0.62) | 0} ${y | 0} L${(x + w * 0.62) | 0} ${y | 0} L${(x + w * 0.22) | 0} ${(y - h * 0.32) | 0} L${(x + w / 2) | 0} ${(y - h * 0.3) | 0}Z" fill="${col}"/>`;
+    }
+    return s;
+  };
+  let grass = "";
+  for (let i = 0; i < 90; i++) { const x = r() * 1600, y = 800 + r() * 90, h = 14 + r() * 24; grass += `<path d="M${x | 0} ${y | 0} q 4 ${(-h / 2) | 0} ${(r() * 10 - 5) | 0} ${-h | 0}" stroke="#3c7d55" stroke-width="3" fill="none"/>`; }
+  const rays = [300, 520, 760].map((x) => `<path d="M${x} -20 L${x + 90} -20 L${x + 420} 900 L${x + 200} 900Z" fill="#fffbe0" opacity=".09"/>`).join("");
+  const bg = svgDoc(`<rect width="1600" height="900" fill="url(#sky)"/>
+<circle cx="380" cy="190" r="260" fill="url(#sun)"/><circle cx="380" cy="190" r="58" fill="#fffbe6"/>
+${hill(520, 50, "#93c9ad", 1)}${pines(26, 560, 170, "#6fae8e", 2)}
+<rect x="0" y="540" width="1600" height="60" fill="#e9f5e6" opacity=".35"/>
+${hill(640, 40, "#4f8f6f", 3)}${pines(18, 690, 260, "#3c7a5a", 4)}
+<g fill="#8d8f9c"><rect x="1180" y="560" width="54" height="170" rx="6"/><rect x="1168" y="548" width="78" height="22" rx="5"/><path d="M1180 600 L1234 584 L1234 640 L1180 650Z" fill="#767887"/></g>
+<path d="M1190 700 C 1200 650 1220 620 1216 580" stroke="#4fae62" stroke-width="6" fill="none"/>
+${hill(780, 22, "#2f6b4f", 5)}${rays}${grass}
+<rect x="0" y="700" width="1600" height="40" fill="#e9f5e6" opacity=".18"/>`, skyDefs("sky", [[0, "#8ccfc4"], [0.6, "#d7efd8"], [1, "#f4f8df"]]) + glowDefs("sun", "#fff6c8"));
+  const butterfly = `<g transform="translate(860 560)"><ellipse cx="-14" cy="0" rx="16" ry="11" fill="#ffd34d"/><ellipse cx="14" cy="0" rx="16" ry="11" fill="#ffb02e"/><rect x="-2" y="-10" width="4" height="20" rx="2" fill="#3a2a1a"/></g>`;
+  return { bg, fg: svgDoc(robot(640, 790, 0.95, false) + butterfly, ROBOT_DEFS) };
+}
+
+function exampleCliff() {
+  const r = rng(33);
+  let streaks = "";
+  for (let i = 0; i < 46; i++) { const y = 600 + r() * 280, w = 30 + r() * 120, x = 700 + (r() - 0.5) * (y - 560) * 2.4; streaks += `<rect x="${x | 0}" y="${y | 0}" width="${w | 0}" height="4" rx="2" fill="#ffd27a" opacity="${(0.25 + r() * 0.4).toFixed(2)}"/>`; }
+  let grass = "";
+  for (let i = 0; i < 50; i++) { const x = 560 + r() * 1040, h = 10 + r() * 22; grass += `<path d="M${x | 0} 696 q 3 ${(-h / 2) | 0} ${(r() * 8 - 4) | 0} ${-h | 0}" stroke="#5f8a45" stroke-width="3" fill="none"/>`; }
+  const bg = svgDoc(`<rect width="1600" height="900" fill="url(#sky)"/>
+<circle cx="420" cy="580" r="380" fill="url(#sun)"/><circle cx="420" cy="580" r="110" fill="#ffe08a"/>
+<path d="M0 260 Q 300 230 520 270 T 1000 250" stroke="#ffc7a8" stroke-width="18" fill="none" opacity=".35" stroke-linecap="round"/>
+<path d="M200 340 Q 500 310 760 345" stroke="#ffc7a8" stroke-width="12" fill="none" opacity=".3" stroke-linecap="round"/>
+<rect x="0" y="600" width="1600" height="300" fill="url(#sea)"/>${streaks}
+<path d="M540 700 C 580 680 620 686 680 688 L1600 680 L1600 900 L480 900 C 500 820 500 760 540 700Z" fill="#4b3650"/>
+<path d="M540 700 C 580 680 620 686 680 688 L1600 680 L1600 712 L680 716 C 620 714 580 712 544 724Z" fill="#6f9a52"/>
+<path d="M620 740 L670 900 M820 740 L850 900 M1100 730 L1130 900 M1400 730 L1420 900" stroke="#2b1f2e" stroke-width="5" opacity=".6"/>
+${grass}`, skyDefs("sky", [[0, "#2c3e50"], [0.55, "#fd746c"], [1, "#ffd27a"]]) + glowDefs("sun", "#ffd200") + skyDefs("sea", [[0, "#5a5f8a"], [1, "#1d2a4a"]]));
+  return { bg, fg: svgDoc(robot(720, 700, 0.8, false) + flower(960, 696, 1.05, true), ROBOT_DEFS) };
+}
+
+function exampleNight() {
+  const r = rng(44);
+  let stars = "", flies = "";
+  for (let i = 0; i < 220; i++) stars += `<circle cx="${(r() * 1600) | 0}" cy="${(r() * 620) | 0}" r="${(0.8 + r() * 2.2).toFixed(1)}" fill="#fff" opacity="${(0.3 + r() * 0.7).toFixed(2)}"/>`;
+  for (let i = 0; i < 26; i++) { const x = r() * 1600, y = 560 + r() * 280; flies += `<circle cx="${x | 0}" cy="${y | 0}" r="10" fill="#fff59a" opacity=".18"/><circle cx="${x | 0}" cy="${y | 0}" r="3.5" fill="#fff59a"/>`; }
+  const bg = svgDoc(`<rect width="1600" height="900" fill="url(#sky)"/>${stars}
+<path d="M-50 330 C 300 180 600 400 900 250 C 1150 130 1400 260 1700 170" stroke="url(#aurora)" stroke-width="90" fill="none" opacity=".45" stroke-linecap="round"/>
+<circle cx="1180" cy="210" r="150" fill="url(#moonglow)"/><circle cx="1180" cy="210" r="68" fill="#eef3ff"/>
+<circle cx="1158" cy="192" r="12" fill="#d5ddf0"/><circle cx="1204" cy="236" r="16" fill="#d5ddf0"/><circle cx="1200" cy="186" r="7" fill="#d5ddf0"/>
+<path d="M0 640 C 300 580 520 610 760 595 C 1040 576 1300 630 1600 600 L1600 900 L0 900Z" fill="#14305a"/>
+<path d="M0 740 C 360 720 700 770 1000 750 C 1240 735 1420 760 1600 750 L1600 900 L0 900Z" fill="#0b1f3a"/>${flies}`,
+    skyDefs("sky", [[0, "#000428"], [0.7, "#0d2f6b"], [1, "#1f4d8f"]]) + glowDefs("moonglow", "#bcd3ff") +
+    `<linearGradient id="aurora" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7cf2c6"/><stop offset=".5" stop-color="#8f7bff"/><stop offset="1" stop-color="#c471ed"/></linearGradient>`);
+  return { bg, fg: svgDoc(robot(700, 780, 0.95, false) + flower(890, 778, 1.05, true), ROBOT_DEFS) };
+}
+
+const EXAMPLE = {
+  id: "exemple", example: true, aspect: "16:9", art: "cartoon", genre: "conte pour enfants",
+  title: "Le Dernier Jardin",
+  logline: "Dans une ville abandonnée, un petit robot jardinier part à la recherche de la dernière fleur du monde.",
+  language: "fr",
+  characters: [{ name: "Pip", look: "Petit robot jardinier orange (#f07b28), tête arrondie avec visière sombre et deux yeux ronds cyan (#7ff3ff), antenne à ampoule jaune, chenilles grises, feuille verte peinte sur le ventre." }],
+  scenes: [
+    { heading: "EXT. VILLE ABANDONNÉE — AUBE", setting: "city", camera: "zoom_in", motion: "idle", cast: ["Pip"], colors: ["#1d2b64", "#c98bb0", "#ffcf8a"], duration_seconds: 7,
+      action: "Pip arrose trois pots vides au pied des tours silencieuses.",
+      narration: "Dans la ville silencieuse, un petit robot jardinier se réveille. Depuis cent ans, il arrose des pots vides.", svg: exampleCity() },
+    { heading: "EXT. FORÊT DES RUINES — MATIN", setting: "forest", camera: "pan_left", motion: "walk_right", cast: ["Pip"], colors: ["#8ccfc4", "#d7efd8", "#fff6c8"], duration_seconds: 7,
+      action: "Pip roule entre les pins, guidé par un papillon jaune.",
+      narration: "Un matin, un parfum inconnu traverse la brume. Pip quitte la ville pour la première fois.", svg: exampleForest() },
+    { heading: "EXT. FALAISE AU BORD DE LA MER — CRÉPUSCULE", setting: "sea", camera: "zoom_out", motion: "approach", cast: ["Pip"], colors: ["#2c3e50", "#fd746c", "#ffd200"], duration_seconds: 7,
+      action: "Au bout de la falaise, une fleur rouge tremble face à l'océan.",
+      narration: "Au bord de la mer, il la trouve enfin : une fleur, une seule, qui l'attendait.", svg: exampleCliff() },
+    { heading: "EXT. COLLINE — NUIT", setting: "space", camera: "static", motion: "idle", cast: ["Pip"], colors: ["#000428", "#1f4d8f", "#bcd3ff"], duration_seconds: 8,
+      action: "Sous une aurore, Pip veille la fleur parmi les lucioles.",
+      narration: "Cette nuit-là, Pip ne rentre pas. Il s'assoit, et pour la première fois, il a quelque chose à protéger.", svg: exampleNight() },
+  ],
+};
+
+// ================================================================== décor de secours (si un dessin échoue)
 
 function ridge(r, width, baseY, amp, step = 8) {
   const waves = Array.from({ length: 4 }, () => [uni(r, 0.5, 3), uni(r, 0, Math.PI * 2), uni(r, 0.3, 1)]);
   const pts = [];
   for (let x = 0; x <= width + step; x += step) {
     const u = x / width;
-    const off = waves.reduce((s, [f, p, a]) => s + a * Math.sin(u * f * Math.PI * 2 + p), 0) / 2.2;
-    pts.push([x, baseY - off * amp]);
+    pts.push([x, baseY - (waves.reduce((s, [f, p, a]) => s + a * Math.sin(u * f * Math.PI * 2 + p), 0) / 2.2) * amp]);
   }
   return pts;
 }
-function fillShape(ctx, pts, h, color) {
-  ctx.beginPath();
-  ctx.moveTo(pts[0][0], pts[0][1]);
-  for (const [x, y] of pts) ctx.lineTo(x, y);
-  ctx.lineTo(pts[pts.length - 1][0], h);
-  ctx.lineTo(0, h);
-  ctx.closePath();
-  ctx.fillStyle = color;
-  ctx.fill();
+function paintFallback(scene, W, H) {
+  const c = makeCanvas(W, H), g = c.getContext("2d");
+  const r = rng(hash(scene.heading + scene.action));
+  const [top, bottom, accent] = scene.colors.map(hexToRgb);
+  const sky = g.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, rgb(top)); sky.addColorStop(1, rgb(bottom));
+  g.fillStyle = sky; g.fillRect(0, 0, W, H);
+  const cx = uni(r, 0.2, 0.8) * W, cy = uni(r, 0.15, 0.4) * H, rad = Math.min(W, H) * 0.08;
+  const glow = g.createRadialGradient(cx, cy, rad * 0.5, cx, cy, rad * 4);
+  glow.addColorStop(0, rgb(accent, 0.5)); glow.addColorStop(1, rgb(accent, 0));
+  g.fillStyle = glow; g.fillRect(0, 0, W, H);
+  g.fillStyle = rgb(mix(accent, [255, 255, 255], 0.35));
+  g.beginPath(); g.arc(cx, cy, rad, 0, 6.283); g.fill();
+  for (let i = 0; i < 4; i++) {
+    const pts = ridge(r, W, H * (0.55 + 0.12 * i), H * (0.18 - 0.03 * i));
+    g.beginPath(); g.moveTo(0, H);
+    for (const [x, y] of pts) g.lineTo(x, y);
+    g.lineTo(W, H); g.closePath();
+    g.fillStyle = rgb(mix(mix(bottom, accent, 0.25), [8, 8, 16], 0.35 + 0.18 * i)); g.fill();
+  }
+  return c;
 }
 
-function paintScene(scene, W, H) {
-  const c = makeCanvas(W, H);
-  const ctx = c.getContext("2d");
-  const r = rng(hash(scene.heading + scene.action + scene.setting));
-  let [top, bottom, accent] = scene.colors.map(hexToRgb);
-  const kind = scene.setting;
-  if (kind === "space") { top = mix(top, [0, 0, 0], 0.7); bottom = mix(bottom, [0, 0, 0], 0.5); }
+// ================================================================== dessins SVG -> images
 
-  const sky = ctx.createLinearGradient(0, 0, 0, H);
-  sky.addColorStop(0, rgb(top));
-  sky.addColorStop(1, rgb(bottom));
-  ctx.fillStyle = sky;
-  ctx.fillRect(0, 0, W, H);
-
-  const starCount = Math.round((W * H) / (kind === "space" ? 2400 : 9000));
-  for (let i = 0; i < starCount; i++) {
-    const x = uni(r, 0, W), y = uni(r, 0, H * 0.7), s = uni(r, 0.6, 2.2);
-    ctx.fillStyle = `rgba(255,255,255,${uni(r, 0.25, 0.8)})`;
-    ctx.beginPath(); ctx.arc(x, y, s, 0, Math.PI * 2); ctx.fill();
-  }
-
-  const cx = uni(r, 0.2, 0.8) * W, cy = uni(r, 0.15, 0.42) * H;
-  const rad = uni(r, 0.06, 0.12) * Math.min(W, H) * (kind === "space" ? 2.1 : 1);
-  const glow = ctx.createRadialGradient(cx, cy, rad * 0.5, cx, cy, rad * 4);
-  glow.addColorStop(0, rgb(accent, 0.5));
-  glow.addColorStop(1, rgb(accent, 0));
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = rgb(mix(accent, [255, 255, 255], 0.35));
-  ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill();
-  if (kind === "space") {
-    ctx.save();
-    ctx.translate(cx, cy); ctx.rotate(-0.35); ctx.scale(1, 0.22);
-    ctx.strokeStyle = rgb(mix(accent, [255, 255, 255], 0.6), 0.75);
-    ctx.lineWidth = rad * 0.35;
-    ctx.beginPath(); ctx.arc(0, 0, rad * 1.75, Math.PI * 0.05, Math.PI * 0.95, true); ctx.stroke();
-    ctx.restore();
-  }
-
-  const layers = 4;
-  for (let i = 0; i < layers; i++) {
-    const depth = i / (layers - 1);
-    const col = mix(mix(bottom, accent, 0.25), [8, 8, 16], 0.35 + 0.55 * depth);
-    const baseY = H * (0.55 + 0.12 * i);
-    const layer = makeCanvas(W, H);
-    const lc = layer.getContext("2d");
-    if (kind === "city") {
-      let x = -uni(r, 0, 40);
-      while (x < W) {
-        const w = uni(r, 0.03, 0.08) * W, h = uni(r, 0.1, 0.35) * H * (1.2 - 0.2 * depth);
-        lc.fillStyle = rgb(col);
-        lc.fillRect(x, baseY - h, w, H);
-        lc.fillStyle = rgb(mix(accent, [255, 240, 200], 0.5), 0.8);
-        for (let wy = baseY - h + 10; wy < baseY; wy += 14)
-          for (let wx = x + 5; wx < x + w - 5; wx += 10) if (r() < 0.25) lc.fillRect(wx, wy, 3, 5);
-        x += w + uni(r, 0, 12);
-      }
-    } else if (kind === "sea" && i >= 1) {
-      fillShape(lc, ridge(r, W, baseY + 0.05 * H, H * 0.02, 4), H, rgb(mix(col, bottom, 0.2)));
-      lc.strokeStyle = rgb(mix(accent, [255, 255, 255], 0.4), 0.3);
-      lc.lineWidth = 2;
-      for (let k = 0; k < 40; k++) {
-        const x = uni(r, 0, W), y = uni(r, baseY + 0.06 * H, H), w = uni(r, 10, 60);
-        lc.beginPath(); lc.moveTo(x, y); lc.lineTo(x + w, y); lc.stroke();
-      }
-    } else if (kind === "forest" && i >= 1) {
-      fillShape(lc, ridge(r, W, baseY, H * 0.04), H, rgb(col));
-      lc.fillStyle = rgb(col);
-      const n = Math.round(14 + 10 * depth);
-      for (let k = 0; k < n; k++) {
-        const x = uni(r, 0, W), h = uni(r, 0.12, 0.3) * H * (0.6 + depth), w = h * uni(r, 0.25, 0.4);
-        const g = baseY + uni(r, -0.01, 0.03) * H;
-        lc.beginPath(); lc.moveTo(x, g - h); lc.lineTo(x - w / 2, g); lc.lineTo(x + w / 2, g); lc.closePath(); lc.fill();
-      }
-    } else {
-      fillShape(lc, ridge(r, W, baseY, H * (0.18 - 0.03 * i)), H, rgb(col));
+const BANNED = ["script", "foreignObject", "image", "iframe", "object", "embed", "a", "audio", "video", "animate", "animateTransform", "animateMotion", "set", "text"];
+function prepareSvg(text, w, h) {
+  const doc = new DOMParser().parseFromString(text, "image/svg+xml");
+  const root = doc.documentElement;
+  if (!root || root.nodeName !== "svg" || doc.getElementsByTagName("parsererror").length) throw new Error("svg invalide");
+  for (const tag of BANNED) for (const node of [...root.getElementsByTagName(tag)]) node.remove();
+  for (const node of [root, ...root.querySelectorAll("*")]) {
+    for (const attr of [...node.attributes]) {
+      const n = attr.name.toLowerCase();
+      if (n.startsWith("on")) node.removeAttribute(attr.name);
+      else if ((n === "href" || n === "xlink:href") && !attr.value.startsWith("#")) node.removeAttribute(attr.name);
     }
-    if (depth < 1) ctx.filter = `blur(${(2.5 * (1 - depth)).toFixed(1)}px)`;
-    ctx.drawImage(layer, 0, 0);
-    ctx.filter = "none";
   }
-
-  const vig = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.35, W / 2, H / 2, Math.max(W, H) * 0.75);
-  vig.addColorStop(0, "rgba(0,0,0,0)");
-  vig.addColorStop(1, "rgba(0,0,0,0.6)");
-  ctx.fillStyle = vig;
-  ctx.fillRect(0, 0, W, H);
-  return c;
+  root.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  if (!root.getAttribute("viewBox")) root.setAttribute("viewBox", "0 0 1600 900");
+  root.setAttribute("width", String(w));
+  root.setAttribute("height", String(h));
+  root.setAttribute("preserveAspectRatio", "xMidYMid slice");
+  return new XMLSerializer().serializeToString(root);
+}
+function svgToCanvas(text, w, h) {
+  return new Promise((resolve, reject) => {
+    let prepared;
+    try { prepared = prepareSvg(text, w, h); } catch (e) { reject(e); return; }
+    const url = URL.createObjectURL(new Blob([prepared], { type: "image/svg+xml" }));
+    const img = new Image();
+    img.onload = () => {
+      const c = makeCanvas(w, h);
+      try { c.getContext("2d").drawImage(img, 0, 0, w, h); } catch (e) { URL.revokeObjectURL(url); reject(e); return; }
+      URL.revokeObjectURL(url);
+      resolve(c);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("svg illisible")); };
+    img.src = url;
+  });
 }
 
-function glowSprite(color) {
-  const c = makeCanvas(32, 32), ctx = c.getContext("2d");
-  const g = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
-  g.addColorStop(0, rgb(color, 1));
-  g.addColorStop(0.35, rgb(color, 0.55));
-  g.addColorStop(1, rgb(color, 0));
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, 32, 32);
-  return c;
-}
-
-// ------------------------------------------------------------------ film et timeline
+// ================================================================== construction du film
 
 const canvas = $("canvas");
 const ctx = canvas.getContext("2d");
-let film = null;      // scénario actuel
-let built = null;     // décors et timeline calculés
+let film = null;
+let built = null;
+let sample = null;
+let generation = null;
+const FPS = 24, TITLE_S = 4, END_S = 3.5, FADE_S = 0.5;
+const END_TITLES = { fr: "Fin", es: "Fin", it: "Fine", de: "Ende", pt: "Fim", ar: "النهاية", en: "The End" };
+const estimateSpeech = (text) => String(text).length / 14;
 
-function estimateSpeech(text) { return String(text).length / 14; }
+function glowSprite(color) {
+  const c = makeCanvas(32, 32), g = c.getContext("2d");
+  const gr = g.createRadialGradient(16, 16, 0, 16, 16, 16);
+  gr.addColorStop(0, rgb(color, 1)); gr.addColorStop(0.35, rgb(color, 0.5)); gr.addColorStop(1, rgb(color, 0));
+  g.fillStyle = gr; g.fillRect(0, 0, 32, 32);
+  return c;
+}
+const grainTile = (() => {
+  const c = makeCanvas(160, 160), g = c.getContext("2d"), d = g.createImageData(160, 160);
+  for (let i = 0; i < d.data.length; i += 4) { const v = 110 + Math.random() * 40; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; }
+  g.putImageData(d, 0, 0);
+  return c;
+})();
 
 function buildFilm(sp) {
   const [W, H] = sp.aspect === "9:16" ? [720, 1280] : [1280, 720];
@@ -550,42 +707,87 @@ function buildFilm(sp) {
   const AW = Math.round(W * 1.3), AH = Math.round(H * 1.3);
   const items = [{ type: "title", dur: TITLE_S }];
   const scenes = sp.scenes.map((s, i) => {
-    const art = paintScene(s, AW, AH);
     const r = rng(hash(s.narration) + 7);
-    const sprite = glowSprite(mix(hexToRgb(s.colors[2]), [255, 255, 255], 0.5));
-    const particles = Array.from({ length: 26 }, () => ({
-      x: uni(r, 0, W), y: uni(r, 0, H), vx: uni(r, -12, 12), vy: uni(r, -24, -6), s: uni(r, 8, 22), a: uni(r, 0.25, 0.65),
-    }));
-    const dur = Math.max(s.duration_seconds, estimateSpeech(s.narration) + 1.4);
-    items.push({ type: "scene", index: i, dur });
-    return { art, sprite, particles, chunks: splitSentences(s.narration) };
+    items.push({ type: "scene", index: i, dur: Math.max(s.duration_seconds, estimateSpeech(s.narration) + 1.4) });
+    return {
+      bg: paintFallback(s, AW, AH), fg: null, ready: false,
+      sprite: glowSprite(mix(hexToRgb(s.colors[2]), [255, 255, 255], 0.5)),
+      particles: Array.from({ length: 18 }, () => ({ x: uni(r, 0, W), y: uni(r, 0, H), vx: uni(r, -12, 12), vy: uni(r, -20, -5), s: uni(r, 6, 18), a: uni(r, 0.2, 0.5) })),
+      chunks: splitSentences(s.narration),
+    };
   });
   items.push({ type: "end", dur: END_S });
   let t = 0;
   for (const it of items) { it.start = t; t += it.dur; }
-  const titleBg = makeCanvas(W, H);
-  const tctx = titleBg.getContext("2d");
-  tctx.filter = "blur(14px)";
-  tctx.drawImage(scenes[0].art, -40, -40, W + 80, H + 80);
-  tctx.filter = "none";
-  tctx.fillStyle = "rgba(0,0,0,0.5)";
-  tctx.fillRect(0, 0, W, H);
-  built = { W, H, items, scenes, titleBg, total: t };
+  built = { W, H, AW, AH, items, scenes, titleBg: null, total: t, film: sp, grain: ctx.createPattern(grainTile, "repeat") };
+  makeTitleBg();
   renderStrip();
+  sp.scenes.forEach((s, i) => { if (s.svg) rasterScene(i); });
 }
+
+function makeTitleBg() {
+  const { W, H } = built;
+  const c = makeCanvas(W, H), g = c.getContext("2d");
+  g.filter = "blur(16px)";
+  g.drawImage(built.scenes[0].bg, -50, -50, W + 100, H + 100);
+  if (built.scenes[0].fg) g.drawImage(built.scenes[0].fg, -50, -50, W + 100, H + 100);
+  g.filter = "none";
+  g.fillStyle = "rgba(3,6,12,0.55)";
+  g.fillRect(0, 0, W, H);
+  built.titleBg = c;
+}
+
+async function rasterScene(i) {
+  const b = built, s = b.film.scenes[i];
+  if (!s.svg) return;
+  try {
+    const [bg, fg] = await Promise.all([
+      svgToCanvas(s.svg.bg, b.AW, b.AH),
+      s.svg.fg ? svgToCanvas(s.svg.fg, b.AW, b.AH).catch(() => null) : null,
+    ]);
+    if (built !== b) return;
+    Object.assign(b.scenes[i], { bg, fg, ready: true });
+    s.artError = false;
+    if (i === 0) makeTitleBg();
+    updateThumb(i);
+    if (!state.playing && !generation?.leader) drawFrame(state.t);
+  } catch {
+    s.artError = true;
+    if (built === b) { updateThumb(i); renderScript(); }
+  }
+}
+
+// ================================================================== rendu image par image
 
 function cameraBox(camera, t, w, h) {
   const e = ease(clamp(t, 0, 1));
   let zoom = 1.03 + 0.04 * e, cx = 0.5;
-  if (camera === "zoom_in") zoom = 1 + 0.18 * e;
-  else if (camera === "zoom_out") zoom = 1.18 - 0.18 * e;
+  if (camera === "zoom_in") zoom = 1 + 0.16 * e;
+  else if (camera === "zoom_out") zoom = 1.16 - 0.16 * e;
   else if (camera === "pan_left" || camera === "pan_right") {
-    zoom = 1.15;
-    const span = (1 - 1 / zoom) / 2;
-    cx = 0.5 + span * (1 - 2 * e) * (camera === "pan_left" ? 1 : -1);
+    zoom = 1.14;
+    cx = 0.5 + ((1 - 1 / zoom) / 2) * (1 - 2 * e) * (camera === "pan_left" ? 1 : -1);
   }
   const bw = w / zoom, bh = h / zoom;
   return [cx * w - bw / 2, (h - bh) / 2, bw, bh];
+}
+
+// Mouvement des personnages : décalage (dx, dy) en fraction de l'image et échelle autour des pieds.
+function motionAt(motion, local, dur) {
+  const p = clamp(local / dur, 0, 1);
+  const step = -Math.abs(Math.sin(local * Math.PI * 2.1)) * 0.012;
+  switch (motion) {
+    case "walk_right": return { dx: -0.09 + 0.18 * p, dy: step, sx: 1, sy: 1 };
+    case "walk_left": return { dx: 0.09 - 0.18 * p, dy: step, sx: 1, sy: 1 };
+    case "jump": {
+      const ph = (local % 1.6) / 1.6, hop = ph < 0.45 ? Math.sin((ph / 0.45) * Math.PI) : 0;
+      const squash = ph > 0.45 && ph < 0.55 ? 0.04 : 0;
+      return { dx: 0, dy: -hop * 0.07, sx: 1 + squash, sy: 1 - squash };
+    }
+    case "float": return { dx: Math.sin(local * 0.7) * 0.01, dy: Math.sin(local * 1.4) * 0.018, sx: 1, sy: 1 };
+    case "approach": { const k = 0.94 + 0.12 * ease(p); return { dx: 0, dy: 0, sx: k, sy: k }; }
+    default: { const b = Math.sin(local * 2.4) * 0.008; return { dx: 0, dy: 0, sx: 1 - b * 0.5, sy: 1 + b }; }
+  }
 }
 
 function itemAt(t) {
@@ -593,53 +795,48 @@ function itemAt(t) {
   for (let i = items.length - 1; i >= 0; i--) if (t >= items[i].start) return i;
   return 0;
 }
+const displayFont = (px, w = 600) => `${w} ${px}px "Space Grotesk", "Segoe UI", sans-serif`;
+const bodyFont = (px, w = 500, style = "normal") => `${style} ${w} ${px}px "DM Sans", "Segoe UI", sans-serif`;
 
-function displayFont(px) { return `800 ${px}px "Big Shoulders Display", "Arial Narrow", sans-serif`; }
-function bodyFont(px, w = 500, style = "normal") { return `${style} ${w} ${px}px "IBM Plex Sans", "Segoe UI", sans-serif`; }
-
-function drawCard(title, lines, eyebrow) {
+function drawCard(title, sub, eyebrow) {
   const { W, H } = built;
   ctx.drawImage(built.titleBg, 0, 0);
-  ctx.textAlign = "center";
-  ctx.textBaseline = "alphabetic";
-  const base = Math.min(W, H);
-  const tSize = Math.round(base * 0.15);
-  ctx.font = displayFont(tSize);
-  const tLines = wrapLines(ctx, title.toUpperCase(), W * 0.86);
+  ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+  const base = Math.min(W, H), tSize = Math.round(base * 0.12);
+  ctx.font = displayFont(tSize, 600);
+  const tLines = wrapLines(ctx, title, W * 0.84);
   ctx.font = bodyFont(Math.round(base * 0.034), 400, "italic");
-  const sLines = lines ? wrapLines(ctx, lines, W * 0.72) : [];
-  const eSize = Math.round(base * 0.026);
-  const block = tLines.length * tSize * 0.95 + sLines.length * base * 0.05 + (eyebrow ? eSize * 2.4 : 0);
-  let y = (H - block) / 2;
+  const sLines = sub ? wrapLines(ctx, sub, W * 0.7) : [];
+  const eSize = Math.round(base * 0.025);
+  let y = (H - (tLines.length * tSize * 1.02 + sLines.length * base * 0.05 + (eyebrow ? eSize * 2.6 : 0))) / 2;
   if (eyebrow) {
     ctx.font = bodyFont(eSize, 600);
-    ctx.fillStyle = "rgba(255,200,160,0.95)";
+    ctx.fillStyle = "#a9d7ff";
     ctx.fillText(eyebrow.toUpperCase().split("").join(" "), W / 2, y + eSize);
-    y += eSize * 2.4;
+    y += eSize * 2.6;
   }
-  ctx.font = displayFont(tSize);
-  ctx.fillStyle = "#ffffff";
-  for (const l of tLines) { y += tSize * 0.95; ctx.fillText(l, W / 2, y); }
+  ctx.font = displayFont(tSize, 600);
+  ctx.fillStyle = "#f5f7fb";
+  ctx.shadowColor = "rgba(116,186,255,0.45)"; ctx.shadowBlur = 30;
+  for (const l of tLines) { y += tSize * 1.02; ctx.fillText(l, W / 2, y); }
+  ctx.shadowBlur = 0;
   ctx.font = bodyFont(Math.round(base * 0.034), 400, "italic");
-  ctx.fillStyle = "rgba(235,235,245,0.92)";
+  ctx.fillStyle = "rgba(220,232,245,0.9)";
   y += base * 0.03;
   for (const l of sLines) { y += base * 0.05; ctx.fillText(l, W / 2, y); }
 }
 
 function drawSubtitle(text) {
   const { W, H } = built;
-  const size = Math.round(Math.min(W, H) * 0.042);
+  const size = Math.round(Math.min(W, H) * 0.036);
   ctx.font = bodyFont(size, 600);
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  const lines = wrapLines(ctx, text, W * 0.84);
-  const lh = size * 1.32;
-  const boxH = lines.length * lh + size * 0.7;
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  const lines = wrapLines(ctx, text, W * 0.84), lh = size * 1.32, boxH = lines.length * lh + size * 0.7;
   const boxW = Math.min(W * 0.92, Math.max(...lines.map((l) => ctx.measureText(l).width)) + size * 1.4);
-  const y0 = H - boxH - H * 0.06;
-  ctx.fillStyle = "rgba(0,0,0,0.58)";
+  const y0 = H - boxH - H * 0.04;
+  ctx.fillStyle = "rgba(3,6,12,0.62)";
   ctx.beginPath();
-  if (ctx.roundRect) ctx.roundRect(W / 2 - boxW / 2, y0, boxW, boxH, size * 0.3); else ctx.rect(W / 2 - boxW / 2, y0, boxW, boxH);
+  if (ctx.roundRect) ctx.roundRect(W / 2 - boxW / 2, y0, boxW, boxH, size * 0.5); else ctx.rect(W / 2 - boxW / 2, y0, boxW, boxH);
   ctx.fill();
   ctx.fillStyle = "#ffffff";
   lines.forEach((l, i) => ctx.fillText(l, W / 2, y0 + size * 0.35 + lh * (i + 0.5)));
@@ -648,19 +845,24 @@ function drawSubtitle(text) {
 function drawFrame(t) {
   if (!built) return;
   const { W, H, items } = built;
-  const idx = itemAt(t);
-  const it = items[idx];
+  const it = items[itemAt(t)];
   const local = t - it.start;
   ctx.save();
-  if (it.type === "title") {
-    drawCard(film.title, film.logline, "Un film écrit par Claude");
-  } else if (it.type === "end") {
-    drawCard(END_TITLES[film.language] || "The End", null, null);
-  } else {
-    const sc = built.scenes[it.index];
-    const scene = film.scenes[it.index];
-    const [sx, sy, sw, sh] = cameraBox(scene.camera, local / it.dur, sc.art.width, sc.art.height);
-    ctx.drawImage(sc.art, sx, sy, sw, sh, 0, 0, W, H);
+  if (it.type === "title") drawCard(film.title, film.logline, "Un film REDREDA AI");
+  else if (it.type === "end") drawCard(END_TITLES[film.language] || "The End", "Écrit et dessiné par REDREDA AI", null);
+  else {
+    const sc = built.scenes[it.index], scene = film.scenes[it.index];
+    const box = cameraBox(scene.camera, local / it.dur, sc.bg.width, sc.bg.height);
+    ctx.drawImage(sc.bg, box[0], box[1], box[2], box[3], 0, 0, W, H);
+    if (sc.fg) {
+      const m = motionAt(scene.motion, local, it.dur), footY = H * 0.86;
+      ctx.save();
+      ctx.translate(W / 2 + m.dx * W, footY + m.dy * H);
+      ctx.scale(m.sx, m.sy);
+      ctx.translate(-W / 2, -footY);
+      ctx.drawImage(sc.fg, box[0], box[1], box[2], box[3], 0, 0, W, H);
+      ctx.restore();
+    }
     for (const p of sc.particles) {
       const x = ((p.x + p.vx * local) % (W + 40) + W + 40) % (W + 40) - 20;
       const y = ((p.y + p.vy * local) % (H + 40) + H + 40) % (H + 40) - 20;
@@ -668,59 +870,60 @@ function drawFrame(t) {
       ctx.drawImage(sc.sprite, x - p.s / 2, y - p.s / 2, p.s, p.s);
     }
     ctx.globalAlpha = 1;
-    if (state.subtitles) {
-      const spoken = Math.max(1, Math.min(it.dur - 0.6, estimateSpeech(scene.narration) + 0.4));
-      const total = sc.chunks.reduce((s, c) => s + c.length, 0) || 1;
-      let acc = 0, chunk = sc.chunks[sc.chunks.length - 1];
-      const pos = clamp((local - 0.4) / spoken, 0, 1) * total;
-      for (const c of sc.chunks) { acc += c.length; if (pos <= acc) { chunk = c; break; } }
-      if (chunk && local > 0.3) drawSubtitle(chunk);
-    }
+    const spoken = Math.max(1, Math.min(it.dur - 0.6, estimateSpeech(scene.narration) + 0.4));
+    const total = sc.chunks.reduce((s, c) => s + c.length, 0) || 1;
+    const pos = clamp((local - 0.4) / spoken, 0, 1) * total;
+    let acc = 0, chunk = sc.chunks[sc.chunks.length - 1];
+    for (const c of sc.chunks) { acc += c.length; if (pos <= acc) { chunk = c; break; } }
+    if (chunk && local > 0.3) drawSubtitle(chunk);
   }
-  const fadeIn = clamp(local / FADE_S, 0, 1), fadeOut = clamp((it.dur - local) / FADE_S, 0, 1);
-  const shade = 1 - Math.min(fadeIn, fadeOut);
+  if (built.grain) {
+    built.grain.setTransform?.(new DOMMatrix().translate((t * 977) % 160, (t * 613) % 160));
+    ctx.globalAlpha = 0.07; ctx.globalCompositeOperation = "overlay";
+    ctx.fillStyle = built.grain; ctx.fillRect(0, 0, W, H);
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+  }
+  const shade = 1 - Math.min(clamp(local / FADE_S, 0, 1), clamp((it.dur - local) / FADE_S, 0, 1));
   if (shade > 0) { ctx.fillStyle = `rgba(0,0,0,${shade})`; ctx.fillRect(0, 0, W, H); }
   ctx.restore();
 }
 
-// Amorce de pellicule pendant que Claude écrit : un compte à rebours qui tourne.
+// Écran d'attente pendant l'écriture : une galaxie qui tourne et un compte à rebours.
 function drawLeader(seconds) {
-  const W = canvas.width, H = canvas.height;
-  const cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.32;
-  ctx.fillStyle = "#2b2e35";
-  ctx.fillRect(0, 0, W, H);
-  const frac = seconds % 1;
-  ctx.fillStyle = "#3d414a";
-  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, R * 1.6, -Math.PI / 2, -Math.PI / 2 + frac * Math.PI * 2); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = "#d9d9d9"; ctx.lineWidth = Math.max(2, R * 0.025);
-  ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.moveTo(cx, 0); ctx.lineTo(cx, H); ctx.stroke();
-  for (const k of [1, 0.86]) { ctx.beginPath(); ctx.arc(cx, cy, R * k, 0, Math.PI * 2); ctx.stroke(); }
-  ctx.fillStyle = "#f2f2f2";
-  ctx.font = displayFont(Math.round(R * 1.15));
+  const W = canvas.width, H = canvas.height, cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.3;
+  ctx.fillStyle = "#03050a"; ctx.fillRect(0, 0, W, H);
+  for (let i = 0; i < 180; i++) {
+    const r = rng(i + 1), d = Math.pow(r(), 1.4) * R * 1.6, a = r() * 6.283 + seconds * (0.25 + (1 - d / (R * 1.6)) * 0.6);
+    ctx.globalAlpha = 0.35 + 0.5 * r();
+    ctx.fillStyle = i % 4 ? "#dceeff" : "#a9d7ff";
+    ctx.beginPath(); ctx.arc(cx + Math.cos(a) * d, cy + Math.sin(a) * d * 0.6, 0.6 + r() * 1.6, 0, 6.283); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = "rgba(169,215,255,0.5)"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(cx, cy, R * 0.55, -Math.PI / 2, -Math.PI / 2 + (seconds % 1) * 6.283); ctx.stroke();
+  ctx.fillStyle = "#f5f7fb"; ctx.font = displayFont(Math.round(R * 0.55), 500);
   ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  ctx.fillText(String(8 - (Math.floor(seconds) % 7)), cx, cy + R * 0.06);
+  ctx.fillText(String(8 - (Math.floor(seconds) % 7)), cx, cy + R * 0.03);
 }
 
-// ------------------------------------------------------------------ musique (Web Audio)
+// ================================================================== musique
 
 const audio = { ctx: null, master: null, dest: null, oscs: [], on: true };
 function ensureAudio() {
-  if (audio.ctx) return audio.ctx.state === "suspended" ? audio.ctx.resume() : null;
+  if (audio.ctx) { if (audio.ctx.state === "suspended") audio.ctx.resume().catch(() => {}); return; }
   const AC = window.AudioContext || window.webkitAudioContext;
   if (!AC) return;
   try {
     const ac = new AC();
     const master = ac.createGain(); master.gain.value = 0;
     const filter = ac.createBiquadFilter(); filter.type = "lowpass"; filter.frequency.value = 900; filter.Q.value = 0.4;
-    filter.connect(master);
-    master.connect(ac.destination);
+    filter.connect(master); master.connect(ac.destination);
     let dest = null;
     try { dest = ac.createMediaStreamDestination(); master.connect(dest); } catch {}
     const lfo = ac.createOscillator(); lfo.frequency.value = 0.08;
     const lfoGain = ac.createGain(); lfoGain.gain.value = 350;
     lfo.connect(lfoGain).connect(filter.frequency); lfo.start();
-    const types = ["triangle", "sine", "sine", "triangle"];
-    audio.oscs = types.map((type, i) => {
+    audio.oscs = ["triangle", "sine", "sine", "triangle"].map((type, i) => {
       const o = ac.createOscillator(); o.type = type; o.detune.value = (i - 1.5) * 4;
       const g = ac.createGain(); g.gain.value = i === 0 ? 0.35 : 0.22;
       o.connect(g).connect(filter); o.start();
@@ -729,21 +932,17 @@ function ensureAudio() {
     Object.assign(audio, { ctx: ac, master, dest });
   } catch { audio.ctx = null; }
 }
-function chordFor(itemIndex) {
-  const minor = !/conte|comédie|documentaire/i.test(film?.style || "");
-  const prog = minor ? [[0, 3, 7], [-4, 0, 3], [3, 7, 10], [-2, 2, 5]] : [[0, 4, 7], [7, 11, 14], [9, 12, 16], [5, 9, 12]];
-  const root = minor ? 57 : 48; // la ou do
-  const tri = prog[itemIndex % prog.length];
-  return [tri[0] - 12, tri[0], tri[1], tri[2]].map((s) => 440 * Math.pow(2, (root + s - 69) / 12));
-}
 function updateMusic(itemIndex) {
-  if (!audio.ctx) return;
+  if (!audio.ctx || !film) return;
+  const minor = !/conte|comédie/i.test(film.genre || film.style || "");
+  const prog = minor ? [[0, 3, 7], [-4, 0, 3], [3, 7, 10], [-2, 2, 5]] : [[0, 4, 7], [7, 11, 14], [9, 12, 16], [5, 9, 12]];
+  const root = minor ? 57 : 48, tri = prog[itemIndex % prog.length];
   const now = audio.ctx.currentTime;
-  chordFor(itemIndex).forEach((f, i) => audio.oscs[i]?.frequency.setTargetAtTime(f, now, 0.6));
+  [tri[0] - 12, tri[0], tri[1], tri[2]].forEach((s, i) => audio.oscs[i]?.frequency.setTargetAtTime(440 * Math.pow(2, (root + s - 69) / 12), now, 0.6));
   audio.master.gain.setTargetAtTime(audio.on && state.playing ? 0.07 : 0, now, 0.4);
 }
 
-// ------------------------------------------------------------------ voix (synthèse du navigateur)
+// ================================================================== voix
 
 const speech = { active: false, current: null, supported: "speechSynthesis" in window };
 function pickVoice(lang) {
@@ -761,8 +960,7 @@ function speak(text) {
     if (v) u.voice = v;
     u.rate = 0.98;
     u.onend = u.onerror = () => { if (speech.current === u) speech.active = false; };
-    speech.current = u;
-    speech.active = true;
+    speech.current = u; speech.active = true;
     speechSynthesis.speak(u);
   } catch { speech.active = false; }
 }
@@ -771,9 +969,9 @@ function silence() {
   if (speech.supported) try { speechSynthesis.cancel(); } catch {}
 }
 
-// ------------------------------------------------------------------ lecteur
+// ================================================================== lecteur
 
-const state = { t: TITLE_S * 0.5, playing: false, voice: true, subtitles: true, item: -1, hold: 0, last: 0, recording: null, leader: null };
+const state = { t: TITLE_S * 0.5, playing: false, voice: true, item: -1, hold: 0, last: 0, recording: null };
 
 function setPlaying(on) {
   state.playing = on;
@@ -784,17 +982,13 @@ function setPlaying(on) {
   if (on) {
     ensureAudio();
     state.last = performance.now();
-    const idx = itemAt(state.t);
-    const it = built.items[idx];
-    state.item = idx;
+    state.item = itemAt(state.t);
+    const it = built.items[state.item];
     if (it.type === "scene" && (state.t - it.start) / it.dur < 0.35) speak(film.scenes[it.index].narration);
     requestAnimationFrame(tick);
-  } else {
-    silence();
-  }
+  } else silence();
   if (built) updateMusic(itemAt(state.t));
 }
-
 function seek(t) {
   state.t = clamp(t, 0, built.total);
   state.hold = 0;
@@ -806,14 +1000,11 @@ function seek(t) {
   drawFrame(state.t);
   syncUi();
 }
-
 function tick(now) {
   if (!state.playing) return;
   const dt = Math.min(0.1, (now - state.last) / 1000);
   state.last = now;
-  const items = built.items;
-  const it = items[state.item];
-  const end = it.start + it.dur;
+  const it = built.items[state.item], end = it.start + it.dur;
   let next = state.t + dt;
   // On attend la fin de la phrase en cours avant de changer de plan (8 s au plus).
   if (next >= end - 0.05 && it.type === "scene" && speech.active && state.hold < 8 && !state.recording) {
@@ -832,7 +1023,7 @@ function tick(now) {
   const idx = itemAt(state.t);
   if (idx !== state.item) {
     state.item = idx; state.hold = 0;
-    const cur = items[idx];
+    const cur = built.items[idx];
     if (cur.type === "scene") speak(film.scenes[cur.index].narration); else silence();
     updateMusic(idx);
   }
@@ -840,95 +1031,101 @@ function tick(now) {
   syncUi();
   requestAnimationFrame(tick);
 }
-
 function syncUi() {
   if (!built) return;
-  const t = state.t;
-  const f = Math.floor(t * FPS);
-  const pad = (n) => String(n).padStart(2, "0");
+  const f = Math.floor(state.t * FPS), pad = (n) => String(n).padStart(2, "0");
   $("timecode").textContent = `${pad(Math.floor(f / (FPS * 3600)))}:${pad(Math.floor(f / (FPS * 60)) % 60)}:${pad(Math.floor(f / FPS) % 60)}:${pad(f % FPS)}`;
-  $("scrub").value = String(Math.round((t / built.total) * 1000));
-  const it = built.items[itemAt(t)];
-  const active = it.type === "scene" ? it.index : -1;
+  $("scrub").value = String(Math.round((state.t / built.total) * 1000));
+  const it = built.items[itemAt(state.t)], active = it.type === "scene" ? it.index : -1;
   for (const b of $("strip").children) b.setAttribute("aria-current", String(Number(b.dataset.index) === active));
 }
 
 function renderStrip() {
-  const strip = $("strip");
-  strip.replaceChildren(...built.scenes.map((sc, i) => {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.dataset.index = String(i);
+  $("strip").replaceChildren(...built.scenes.map((sc, i) => {
+    const b = el("button");
+    b.type = "button"; b.dataset.index = String(i);
     b.setAttribute("aria-label", `Aller au plan ${i + 1}`);
-    const th = makeCanvas(Math.round(built.W / 6), Math.round(built.H / 6));
-    th.getContext("2d").drawImage(sc.art, 0, 0, th.width, th.height);
-    const n = document.createElement("span");
-    n.textContent = String(i + 1).padStart(2, "0");
-    b.append(th, n);
+    b.append(makeCanvas(Math.round(built.W / 6), Math.round(built.H / 6)), el("span", "", String(i + 1).padStart(2, "0")));
     b.addEventListener("click", () => {
-      if (state.recording) return;
-      seek(built.items.find((x) => x.type === "scene" && x.index === i).start + 0.01);
+      if (state.recording || generation?.leader) return;
+      seek(built.items.find((x) => x.type === "scene" && x.index === i).start + FADE_S + 0.05);
     });
     return b;
   }));
+  built.scenes.forEach((_, i) => updateThumb(i));
+}
+function updateThumb(i) {
+  const b = $("strip").children[i];
+  if (!b || !built) return;
+  const th = b.querySelector("canvas"), g = th.getContext("2d"), sc = built.scenes[i];
+  g.drawImage(sc.bg, 0, 0, th.width, th.height);
+  if (sc.fg) g.drawImage(sc.fg, 0, 0, th.width, th.height);
+  const s = built.film.scenes[i];
+  b.classList.toggle("pending", Boolean(generation && generation.film === built.film && !s.svg && !s.artError));
 }
 
-// ------------------------------------------------------------------ scénario affiché
+// ================================================================== scénario affiché
 
 function renderScript() {
-  const el = $("script");
-  const nodes = [];
-  const add = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; n.textContent = text; nodes.push(n); return n; };
-  add("p", "eyebrow", film.example ? "Film d'exemple" : "Scénario écrit par Claude");
-  add("h3", "", film.title);
-  add("p", "logline", film.logline);
+  const nodes = [
+    el("span", "card-kicker", film.example ? "Film d'exemple" : "Scénario écrit par REDREDA AI"),
+    el("h3", "", film.title),
+    el("p", "logline", film.logline),
+  ];
+  if (film.characters?.length) {
+    const cast = el("div", "cast");
+    for (const c of film.characters) { const s = el("span", "", c.name); s.title = c.look; cast.append(s); }
+    nodes.push(cast);
+  }
   film.scenes.forEach((s, i) => {
-    const shot = document.createElement("div");
-    shot.className = "shot";
-    const slug = document.createElement("div");
-    slug.className = "slug";
-    const h = document.createElement("span"); h.textContent = `${i + 1}. ${s.heading}`;
-    const sm = document.createElement("small"); sm.textContent = `${Math.round(built.items[i + 1].dur)} s`;
-    slug.append(h, sm);
-    const action = document.createElement("p"); action.className = "action"; action.textContent = s.action;
-    const cue = document.createElement("p"); cue.className = "cue"; cue.textContent = film.language === "fr" ? "Narrateur (V.O.)" : "Narrator (V.O.)";
-    const dia = document.createElement("p"); dia.className = "dialogue"; dia.textContent = s.narration;
-    shot.append(slug, action, cue, dia);
+    const shot = el("div", "shot");
+    const slug = el("div", "slug");
+    slug.append(el("span", "", `${i + 1}. ${s.heading}`), el("small", "", `${Math.round(built.items[i + 1].dur)} s`));
+    shot.append(slug, el("p", "action", s.action), el("p", "cue", film.language === "fr" ? "Narrateur (V.O.)" : "Narrator (V.O.)"), el("p", "dialogue", s.narration));
+    if (!film.example && sample) {
+      if (s.artError) shot.append(el("span", "art-error", "Ce plan n'a pas pu être dessiné. Un décor simple le remplace."));
+      const btn = el("button", "redraw", "Redessiner ce plan");
+      btn.type = "button";
+      btn.disabled = Boolean(generation);
+      btn.addEventListener("click", () => redraw(i));
+      shot.append(btn);
+    }
     nodes.push(shot);
   });
-  el.replaceChildren(...nodes);
-  el.dir = film.language === "ar" ? "rtl" : "ltr";
+  $("script").replaceChildren(...nodes);
+  $("script").dir = film.language === "ar" ? "rtl" : "ltr";
 }
 
-// ------------------------------------------------------------------ bibliothèque (navigateur)
+// ================================================================== bibliothèque
 
+const STORE_KEY = "redreda-studio-films-v2";
 function loadLibrary() {
   try { return JSON.parse(localStorage.getItem(STORE_KEY) || "[]").filter((f) => f && Array.isArray(f.scenes)); } catch { return []; }
 }
 function saveLibrary(list) {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(list.slice(0, 30))); } catch {}
+  let items = list.slice(0, 15);
+  while (items.length) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(items)); return; } catch { items = items.slice(0, -1); }
+  }
+}
+function persist(sp) {
+  if (!sp.example) saveLibrary([sp, ...loadLibrary().filter((f) => f.id !== sp.id)]);
 }
 function renderLibrary() {
-  const list = [EXAMPLE, ...loadLibrary()];
-  $("films").replaceChildren(...list.map((f) => {
-    const li = document.createElement("li");
+  $("films").replaceChildren(...[EXAMPLE, ...loadLibrary()].map((f) => {
+    const li = el("li");
     li.setAttribute("aria-current", String(film?.id === f.id));
-    const open = document.createElement("button");
-    open.type = "button"; open.className = "open";
-    const t = document.createElement("strong"); t.textContent = f.title;
-    const meta = document.createElement("small");
-    meta.textContent = f.example ? `${f.scenes.length} plans · ${f.style}` :
-      `${f.scenes.length} plans · ${f.style} · ${new Date(f.createdAt).toLocaleDateString("fr-FR")}`;
-    open.append(t, meta);
-    open.addEventListener("click", () => loadFilm(f, true));
+    const open = el("button", "open");
+    open.type = "button";
+    open.append(el("strong", "", f.title), el("small", "", `${f.scenes.length} plans · ${f.genre || f.style || ""}` + (f.createdAt ? ` · ${new Date(f.createdAt).toLocaleDateString("fr-FR")}` : "")));
+    open.addEventListener("click", () => loadFilm(f.example ? EXAMPLE : (generation?.film?.id === f.id ? generation.film : f), true));
     li.append(open);
-    if (f.example) {
-      const tag = document.createElement("span"); tag.className = "tag"; tag.textContent = "Exemple";
-      li.append(tag);
-    } else {
-      const del = document.createElement("button");
-      del.type = "button"; del.className = "del"; del.textContent = "Supprimer";
+    if (f.example) li.append(el("span", "tag", "Exemple"));
+    else {
+      const del = el("button", "del", "Supprimer");
+      del.type = "button";
       del.addEventListener("click", () => {
+        if (generation?.film?.id === f.id) return;
         if (!del.classList.contains("confirm")) { del.classList.add("confirm"); del.textContent = "Confirmer ?"; return; }
         saveLibrary(loadLibrary().filter((x) => x.id !== f.id));
         if (film?.id === f.id) loadFilm(EXAMPLE, false);
@@ -941,164 +1138,278 @@ function renderLibrary() {
 }
 
 function loadFilm(sp, scroll) {
-  if (state.recording) return;
+  if (state.recording || generation?.leader) return;
   setPlaying(false);
   film = sp;
   buildFilm(sp);
   renderScript();
   renderLibrary();
   seek(TITLE_S * 0.5);
-  if (scroll) $("screen").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  if (scroll) $("screen").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
 }
 
-// ------------------------------------------------------------------ Claude écrit le scénario
+// ================================================================== l'IA écrit et dessine
 
-function buildPrompt(idea, style, shots, language) {
+const ART_STYLES = {
+  cartoon: "dessin animé de cinéma, comme un long-métrage d'animation : formes rondes et lisibles, dégradés doux pour le volume, lumière chaude, contours fins plus sombres que le remplissage",
+  anime: "anime japonais : traits nets, grands yeux expressifs, aplats avec ombres franches en deux tons, ciels lumineux très détaillés",
+  storybook: "livre d'images pour enfants : formes douces, couleurs pastel, petits motifs qui suggèrent la texture, ambiance chaleureuse",
+  comic: "bande dessinée franco-belge : contours noirs francs, aplats de couleurs vives, ombres simples, décors fouillés",
+};
+const SETTINGS = ["city", "sea", "forest", "mountains", "space", "interior", "desert", "snow"];
+const CAMERAS = ["zoom_in", "zoom_out", "pan_left", "pan_right", "static"];
+const MOTIONS = ["idle", "walk_left", "walk_right", "jump", "float", "approach"];
+
+function screenplayPrompt(idea, genre, shots, language) {
   const lang = language === "auto" ? "la même langue que l'idée" : `la langue de code ISO « ${language} »`;
-  return `Tu es réalisateur et scénariste de courts-métrages. Écris un film court à partir de l'idée ci-dessous. Il sera fabriqué automatiquement : chaque plan devient une illustration animée (paysage stylisé avec un ciel en dégradé, un astre lumineux et des silhouettes de décor), la narration est lue par une voix de synthèse et affichée en sous-titres.
+  return `Tu es réalisateur et scénariste de films d'animation. Écris un court-métrage animé à partir de l'idée ci-dessous. Il sera fabriqué automatiquement : chaque plan est dessiné en 2D (un décor et, devant, les personnages qui bougent), la narration est lue par une voix de synthèse et affichée en sous-titres.
 
 Idée : ${idea}
-Style : ${style}
+Genre : ${genre}
 Nombre de plans : exactement ${shots}
 Écris le titre, l'accroche, les intitulés, les actions et la narration dans ${lang}.
 
 Règles :
-- Un vrai arc narratif (accroche, développement, chute). La narration de chaque plan fait une à trois phrases, faites pour être dites à voix haute, et s'enchaîne avec la suivante.
+- Un vrai arc narratif (accroche, développement, chute) porté par un ou deux personnages attachants. La narration fait une à trois phrases par plan, pour être dite à voix haute, et s'enchaîne avec le plan suivant.
+- "characters" : 1 à 3 personnages. "look" décrit l'apparence de façon précise et constante, pour qu'un illustrateur les dessine pareil dans chaque plan : espèce ou type, taille et proportions, couleurs avec leurs codes hexadécimaux, vêtements, accessoire ou signe distinctif.
 - "heading" : intitulé de plan à la manière d'un scénario, par exemple « EXT. PORT DE PÊCHE — AUBE ».
-- "action" : une phrase qui décrit ce que l'on voit à l'image.
-- "setting" : le décor principal, parmi city, sea, forest, mountains, space.
-- "camera" : le mouvement de caméra, parmi zoom_in, zoom_out, pan_left, pan_right, static. Varie-les.
-- "colors" : trois couleurs #RRGGBB : haut du ciel, bas du ciel, lumière de l'astre. Elles portent l'heure et l'émotion du plan.
-- "duration_seconds" : entre 4 et 10.
+- "action" : une phrase qui décrit ce que l'on voit, avec la pose et l'expression des personnages.
+- "cast" : les noms des personnages visibles dans le plan (liste vide pour un plan de décor seul).
+- "motion" : le mouvement des personnages : idle, walk_left, walk_right, jump, float ou approach.
+- "camera" : zoom_in, zoom_out, pan_left, pan_right ou static. Varie-les.
+- "setting" : city, sea, forest, mountains, space, interior, desert ou snow.
+- "colors" : trois couleurs #RRGGBB : haut du ciel ou du fond, bas du ciel, lumière principale.
+- "duration_seconds" : entre 5 et 10.
 - "language" : code ISO 639-1 de la narration.
 
 Réponds uniquement avec un objet JSON de cette forme :
-{"title": "…", "logline": "une phrase", "language": "fr", "scenes": [{"heading": "EXT. … — …", "action": "…", "narration": "…", "setting": "city", "camera": "zoom_in", "colors": ["#1d2b64", "#f8cdda", "#ffb347"], "duration_seconds": 6}]}`;
+{"title": "…", "logline": "une phrase", "language": "fr", "characters": [{"name": "…", "look": "…"}], "scenes": [{"heading": "EXT. … — …", "action": "…", "narration": "…", "cast": ["…"], "motion": "walk_right", "camera": "zoom_in", "setting": "forest", "colors": ["#1d2b64", "#f8cdda", "#ffb347"], "duration_seconds": 7}]}`;
+}
+
+function artPrompt(sp, i) {
+  const s = sp.scenes[i];
+  const [vw, vh] = sp.aspect === "9:16" ? [900, 1600] : [1600, 900];
+  const cast = sp.characters.filter((c) => s.cast.includes(c.name));
+  const facing = s.motion === "walk_left" ? "vers la gauche" : s.motion === "walk_right" ? "vers la droite" : "de trois quarts, vers le centre de l'image";
+  const ground = Math.round(vh * 0.86);
+  return `Tu es illustrateur pour un studio d'animation. Dessine le plan ${i + 1} sur ${sp.scenes.length} du film « ${sp.title} », en SVG.
+
+Style de dessin : ${ART_STYLES[sp.art] || ART_STYLES.cartoon}.
+Plan : ${s.heading}. ${s.action}
+Ambiance de couleurs : ${s.colors.join(", ")}.
+${cast.length ? `Personnages à dessiner (respecte exactement leur apparence, c'est la même dans tout le film) :\n${cast.map((c) => `- ${c.name} : ${c.look}`).join("\n")}` : "Aucun personnage dans ce plan."}
+
+Livre deux images SVG séparées, chacune avec viewBox="0 0 ${vw} ${vh}" :
+1. <svg id="bg" …> : le décor seul, plein cadre, sans personnage. Donne de la profondeur avec au moins quatre plans (fond, lointain, milieu, premier plan), une source de lumière et des détails propres au lieu. Garde le sol dégagé entre x=${Math.round(vw * 0.25)} et x=${Math.round(vw * 0.75)} pour que les personnages s'y tiennent.
+2. <svg id="fg" …> : ${cast.length ? `uniquement les personnages et ce qu'ils tiennent, sur fond transparent (aucun rectangle de fond). Leurs pieds touchent le sol vers y=${ground - 60} à ${ground}. Ils occupent 35 à 60 % de la hauteur et restent dans la zone centrale (x entre ${Math.round(vw * 0.22)} et ${Math.round(vw * 0.78)}). Ils regardent ${facing}. Visages expressifs : yeux avec reflets, sourcils, bouche qui montre l'émotion du plan. Ajoute une ombre douce au sol sous chacun.` : `laisse-le vide : <svg id="fg" viewBox="0 0 ${vw} ${vh}"></svg>.`}
+
+Contraintes techniques : pas de <script>, <image>, <foreignObject>, <text>, police, lien ou fichier externe ; pas de balise <svg> imbriquée. Utilise <defs> avec linearGradient et radialGradient pour le volume et la lumière. Chaque couleur a au moins deux nuances (lumière et ombre). Reste sous 16 000 caractères au total.
+Réponds uniquement avec les deux balises <svg>, l'une après l'autre, sans aucun autre texte.`;
 }
 
 function normalize(raw, shots, meta) {
   const str = (v, max = 400) => (typeof v === "string" ? v.trim().slice(0, max) : "");
   const hex = (c) => typeof c === "string" && /^#[0-9a-fA-F]{6}$/.test(c);
+  const characters = (Array.isArray(raw?.characters) ? raw.characters : []).slice(0, 3)
+    .map((c) => ({ name: str(c?.name, 40), look: str(c?.look, 600) })).filter((c) => c.name && c.look);
+  const names = new Set(characters.map((c) => c.name));
   const scenes = (Array.isArray(raw?.scenes) ? raw.scenes : []).slice(0, shots).map((s) => {
     const colors = (Array.isArray(s?.colors) ? s.colors : []).filter(hex).slice(0, 3);
     return {
       heading: str(s?.heading, 120) || "EXT. — JOUR",
-      action: str(s?.action, 300),
+      action: str(s?.action, 400),
       narration: str(s?.narration, 600),
-      setting: SETTINGS.includes(s?.setting) ? s.setting : "mountains",
+      cast: (Array.isArray(s?.cast) ? s.cast : []).filter((n) => names.has(n)),
+      motion: MOTIONS.includes(s?.motion) ? s.motion : "idle",
       camera: CAMERAS.includes(s?.camera) ? s.camera : "static",
+      setting: SETTINGS.includes(s?.setting) ? s.setting : "mountains",
       colors: colors.length === 3 ? colors : ["#1b1f3b", "#53354a", "#e84545"],
-      duration_seconds: clamp(Math.round(Number(s?.duration_seconds) || 6), 4, 10),
+      duration_seconds: clamp(Math.round(Number(s?.duration_seconds) || 7), 5, 10),
+      svg: null,
     };
   }).filter((s) => s.narration);
   if (!scenes.length) throw { code: "invalid_json" };
-  const language = (str(raw?.language, 5) || "fr").toLowerCase().slice(0, 2);
   return {
     id: `f${Date.now().toString(36)}`, createdAt: Date.now(), ...meta,
-    title: str(raw?.title, 120) || "Sans titre", logline: str(raw?.logline, 300), language, scenes,
+    title: str(raw?.title, 120) || "Sans titre", logline: str(raw?.logline, 300),
+    language: (str(raw?.language, 5) || "fr").toLowerCase().slice(0, 2), characters, scenes,
   };
 }
 
+function extractSvgs(text) {
+  const all = String(text).match(/<svg[\s\S]*?<\/svg>/gi) || [];
+  const byId = (id) => all.find((s) => new RegExp(`^<svg[^>]*\\bid=["']${id}["']`, "i").test(s));
+  const bg = byId("bg") || all[0];
+  if (!bg) return null;
+  prepareSvg(bg, 16, 9);
+  const fg = byId("fg") || all.find((s) => s !== bg) || null;
+  let fgOk = null;
+  if (fg && /<(path|circle|ellipse|rect|polygon|g)\b/i.test(fg)) { try { prepareSvg(fg, 16, 9); fgOk = fg; } catch {} }
+  return { bg, fg: fgOk };
+}
+
 const ERRORS = {
-  not_granted: "Vous n'avez pas autorisé cette page à utiliser Claude. Rechargez la page pour qu'elle vous le redemande.",
-  sampling_disabled: "Claude n'est pas disponible pour ce compte.",
-  rate_limited: "Trop de demandes pour l'instant. Patientez une minute avant de réessayer.",
+  not_granted: "Vous n'avez pas autorisé cette page à utiliser l'IA. Rechargez la page pour qu'elle vous le redemande.",
+  sampling_disabled: "L'IA n'est pas disponible pour ce compte.",
+  rate_limited: "Trop de demandes pour l'instant. Patientez quelques minutes, puis utilisez « Redessiner ce plan » pour les plans manquants.",
   session_expired: "Votre session a expiré. Reconnectez-vous à claude.ai.",
-  refused: "Claude a refusé d'écrire ce film. Essayez une autre idée.",
+  refused: "L'IA a refusé d'écrire ce film. Essayez une autre idée.",
   invalid_json: "Le scénario reçu était incomplet. Réessayez, éventuellement avec moins de plans.",
-  empty_completion: "Claude n'a rien écrit. Reformulez l'idée et réessayez.",
+  empty_completion: "L'IA n'a rien écrit. Reformulez l'idée et réessayez.",
   prompt_too_large: "L'idée est trop longue. Raccourcissez-la.",
 };
+const FATAL = new Set(["not_granted", "sampling_disabled", "session_expired", "rate_limited", "cancelled"]);
 function showMessage(kind, text) {
   const m = $("message");
   m.className = `msg ${kind}`;
   m.textContent = text;
   m.hidden = !text;
 }
+function setStep(id, st) { $(id).dataset.state = st; }
 
-let sample = null;
-let generation = null;
+function beginGeneration(sp) {
+  generation = { ctl: new AbortController(), film: sp, leader: false };
+  $("create").disabled = true;
+  $("progress").hidden = false;
+  return generation.ctl;
+}
+function endGeneration() {
+  generation = null;
+  $("progress").hidden = true;
+  $("drawingBadge").hidden = true;
+  $("create").disabled = !sample;
+  if (film && built) { renderScript(); built.scenes.forEach((_, i) => updateThumb(i)); }
+}
 
 async function createFilm(event) {
   event.preventDefault();
   const idea = $("idea").value.trim();
   if (idea.length < 3) { showMessage("warn", "Décrivez votre idée en une phrase au moins."); $("idea").focus(); return; }
   if (!sample || generation || state.recording) return;
-  const meta = { style: $("style").value, aspect: $("aspect").value, idea };
+  const meta = { art: $("art").value, genre: $("genre").value, aspect: $("aspect").value, idea };
   const shots = Number($("shots").value);
   setPlaying(false);
   showMessage("", "");
-  $("create").disabled = true;
-  $("status").hidden = false;
-  $("statusText").textContent = "Claude écrit le scénario…";
-  const ctl = new AbortController();
-  const started = performance.now();
-  generation = { ctl };
-  if (meta.aspect === "9:16") { canvas.width = 720; canvas.height = 1280; } else { canvas.width = 1280; canvas.height = 720; }
+  const ctl = beginGeneration(null);
+  generation.leader = true;
+  setStep("stepScript", "active"); setStep("stepArt", "");
+  $("artCount").textContent = "";
+  canvas.width = meta.aspect === "9:16" ? 720 : 1280;
+  canvas.height = meta.aspect === "9:16" ? 1280 : 720;
   $("screen").classList.toggle("portrait", meta.aspect === "9:16");
   $("bigplay").hidden = true;
+  const started = performance.now();
   const anim = (now) => {
-    if (!generation) return;
+    if (!generation?.leader) return;
     const s = (now - started) / 1000;
     drawLeader(s);
     $("elapsed").textContent = `${Math.floor(s)} s`;
     requestAnimationFrame(anim);
   };
   requestAnimationFrame(anim);
+
+  let sp;
   try {
-    const raw = await sample.json(buildPrompt(idea, meta.style, shots, $("language").value), {
-      signal: ctl.signal,
-      modelTier: "default",
-      cache: false,
-      onText: ({ text }) => { $("statusText").textContent = `Claude écrit le scénario… ${text.length} caractères`; },
+    const raw = await sample.json(screenplayPrompt(idea, meta.genre, shots, $("language").value), {
+      signal: ctl.signal, modelTier: "default", cache: false,
     });
-    const sp = normalize(raw, shots, meta);
-    saveLibrary([sp, ...loadLibrary()]);
-    generation = null;
-    loadFilm(sp, false);
-    showMessage("ok", `« ${sp.title} » est prêt. Appuyez sur Lecture.`);
+    sp = normalize(raw, shots, meta);
   } catch (e) {
-    generation = null;
+    endGeneration();
     loadFilm(film || EXAMPLE, false);
-    if (e?.code !== "cancelled") showMessage("err", ERRORS[e?.code] || "La connexion à Claude a été interrompue. Réessayez dans un instant.");
-    if (e?.code === "not_granted" || e?.code === "sampling_disabled") { $("create").hidden = true; }
-  } finally {
-    generation = null;
-    $("status").hidden = true;
-    $("create").disabled = false;
+    if (e?.code !== "cancelled") showMessage("err", ERRORS[e?.code] || "La connexion à l'IA a été interrompue. Réessayez dans un instant.");
+    if (e?.code === "not_granted" || e?.code === "sampling_disabled") $("create").hidden = true;
+    return;
   }
+  generation.leader = false;
+  generation.film = sp;
+  setStep("stepScript", "done");
+  persist(sp);
+  loadFilm(sp, false);
+  showMessage("ok", `« ${sp.title} » est écrit. Les plans sont en train d'être dessinés.`);
+  await drawScenes(sp, sp.scenes.map((_, i) => i), ctl);
 }
 
-// ------------------------------------------------------------------ enregistrement vidéo
+async function redraw(i) {
+  if (!sample || generation || state.recording || !film || film.example) return;
+  const sp = film;
+  const ctl = beginGeneration(sp);
+  setStep("stepScript", "done");
+  $("elapsed").textContent = "";
+  showMessage("", "");
+  sp.scenes[i].svg = null;
+  sp.scenes[i].artError = false;
+  await drawScenes(sp, [i], ctl);
+}
+
+async function drawScenes(sp, indices, ctl) {
+  setStep("stepArt", "active");
+  let done = 0, failed = 0, fatal = null;
+  const count = () => {
+    $("artCount").textContent = `${done}/${indices.length}`;
+    $("drawingBadge").textContent = `Dessin des plans ${done}/${indices.length}`;
+    $("drawingBadge").hidden = built?.film !== sp;
+    if (built?.film === sp) $("drawingBadge").hidden = false;
+  };
+  count();
+  if (built?.film === sp) { renderScript(); built.scenes.forEach((_, i) => updateThumb(i)); }
+  const queue = [...indices];
+  const worker = async () => {
+    while (queue.length && !fatal) {
+      const i = queue.shift();
+      try {
+        const { text } = await sample(artPrompt(sp, i), { signal: ctl.signal, modelTier: "default", cache: false });
+        const svg = extractSvgs(text);
+        if (!svg) throw { code: "bad_svg" };
+        sp.scenes[i].svg = svg;
+        sp.scenes[i].artError = false;
+        persist(sp);
+        if (built?.film === sp) rasterScene(i);
+      } catch (e) {
+        if (FATAL.has(e?.code)) { fatal = e.code; break; }
+        failed++;
+        sp.scenes[i].artError = true;
+        if (built?.film === sp) updateThumb(i);
+      }
+      done++;
+      count();
+    }
+  };
+  await Promise.all([worker(), worker()]);
+  setStep("stepArt", fatal ? "" : "done");
+  endGeneration();
+  persist(sp);
+  if (fatal === "cancelled") showMessage("warn", "Dessin arrêté. Les plans manquants gardent un décor simple ; vous pouvez les redessiner un par un sous le scénario.");
+  else if (fatal) showMessage("err", ERRORS[fatal] || "Le dessin a été interrompu.");
+  else if (failed) showMessage("warn", `${failed} plan${failed > 1 ? "s n'ont" : " n'a"} pas pu être dessiné${failed > 1 ? "s" : ""}. Utilisez « Redessiner ce plan » sous le scénario.`);
+  else showMessage("ok", `« ${sp.title} » est prêt. Appuyez sur Lecture.`);
+}
+
+// ================================================================== enregistrement vidéo
 
 let downloads = null;
 function recorderType() {
   if (!window.MediaRecorder) return null;
-  const types = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm", "video/mp4"];
-  return types.find((t) => MediaRecorder.isTypeSupported?.(t)) || null;
+  return ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm", "video/mp4"].find((t) => MediaRecorder.isTypeSupported?.(t)) || null;
 }
-
 function startRecording() {
   const type = recorderType();
   if (!type || !downloads || !built || state.recording || generation) return;
   ensureAudio();
-  let stream;
-  try { stream = canvas.captureStream(30); } catch { showMessage("err", "Ce navigateur ne permet pas d'enregistrer la vidéo."); return; }
-  if (audio.on && audio.dest) {
-    const track = audio.dest.stream.getAudioTracks()[0];
-    if (track) stream.addTrack(track);
-  }
-  const chunks = [];
   let rec;
-  try { rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 6_000_000 }); }
-  catch { showMessage("err", "Ce navigateur ne permet pas d'enregistrer la vidéo."); return; }
+  try {
+    const stream = canvas.captureStream(30);
+    const track = audio.on && audio.dest ? audio.dest.stream.getAudioTracks()[0] : null;
+    if (track) stream.addTrack(track);
+    rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 6_000_000 });
+  } catch { showMessage("err", "Ce navigateur ne permet pas d'enregistrer la vidéo."); return; }
+  const chunks = [];
   rec.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
   rec.onstop = async () => {
-    const blob = new Blob(chunks, { type });
     const ext = type.startsWith("video/mp4") ? "mp4" : "webm";
     const name = (film.title || "film").replace(/[\\/:*?"<>|]+/g, "").slice(0, 80) + "." + ext;
     try {
-      await downloads.save({ filename: name, data: blob });
+      await downloads.save({ filename: name, data: new Blob(chunks, { type }) });
       showMessage("ok", `Vidéo « ${name} » enregistrée.`);
     } catch (e) {
       if (e?.code !== "declined") showMessage("err", "La vidéo n'a pas pu être enregistrée dans cette vue.");
@@ -1112,28 +1423,28 @@ function startRecording() {
   rec.start(500);
   setPlaying(true);
 }
-
 function finishRecording() {
   const rec = state.recording;
   state.recording = null;
   $("recBadge").hidden = true;
-  for (const id of ["recordBtn", "restart", "scrub", "play", "create"]) $(id).disabled = false;
+  for (const id of ["recordBtn", "restart", "scrub", "play"]) $(id).disabled = false;
+  $("create").disabled = !sample;
   showMessage("", "");
   try { rec.stop(); } catch {}
 }
 
-// ------------------------------------------------------------------ branchements
+// ================================================================== branchements
 
 function togglePlay() {
-  if (!built || generation || state.recording) return;
+  if (!built || generation?.leader || state.recording) return;
   if (!state.playing && state.t >= built.total - 0.01) seek(0);
   setPlaying(!state.playing);
 }
 $("bigplay").addEventListener("click", togglePlay);
 $("play").addEventListener("click", togglePlay);
 canvas.addEventListener("click", togglePlay);
-$("restart").addEventListener("click", () => { if (!state.recording && !generation) seek(0); });
-$("scrub").addEventListener("input", (e) => { if (!state.recording && !generation) seek((Number(e.target.value) / 1000) * built.total); });
+$("restart").addEventListener("click", () => { if (!state.recording && !generation?.leader) seek(0); });
+$("scrub").addEventListener("input", (e) => { if (!state.recording && !generation?.leader) seek((Number(e.target.value) / 1000) * built.total); });
 $("voiceBtn").addEventListener("click", () => {
   state.voice = !state.voice;
   $("voiceBtn").setAttribute("aria-pressed", String(state.voice));
@@ -1152,10 +1463,10 @@ document.addEventListener("keydown", (e) => {
   if (e.code === "Space" && e.target === document.body) { e.preventDefault(); togglePlay(); }
 });
 if (!speech.supported) { $("voiceBtn").disabled = true; $("voiceBtn").setAttribute("aria-pressed", "false"); state.voice = false; }
-else try { speechSynthesis.getVoices(); speechSynthesis.addEventListener?.("voiceschanged", () => {}); } catch {}
+else try { speechSynthesis.getVoices(); } catch {}
 
 loadFilm(EXAMPLE, false);
-document.fonts?.ready.then(() => { if (!state.playing && !generation) drawFrame(state.t); });
+document.fonts?.ready.then(() => { if (!state.playing && !generation?.leader) drawFrame(state.t); });
 
 (async () => {
   const claude = window.claude;
@@ -1168,6 +1479,7 @@ document.fonts?.ready.then(() => { if (!state.playing && !generation) drawFrame(
   if (!sample) { $("noClaude").hidden = false; $("create").disabled = true; }
   if (downloads && recorderType()) $("recordBtn").hidden = false;
   else $("recordNote").hidden = true;
+  if (film && !film.example) renderScript();
 })();
 })();
 </script>
