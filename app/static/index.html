@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Studio de films IA</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">●</span>
+      <div>
+        <h1>Studio de films IA</h1>
+        <p>Une idée en une phrase → un court-métrage complet, écrit, illustré, narré et monté par l'IA.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="card" aria-labelledby="new-film">
+      <h2 id="new-film">Nouveau film</h2>
+      <div id="setup-warning" class="notice warn" hidden></div>
+      <form id="film-form">
+        <label class="field">
+          <span>Votre idée</span>
+          <textarea id="idea" name="idea" rows="4" required minlength="3" maxlength="2000"
+            placeholder="Ex. : Un petit robot jardinier découvre la dernière fleur d'une ville abandonnée."></textarea>
+        </label>
+
+        <div class="grid">
+          <label class="field">
+            <span>Style</span>
+            <select id="style" name="style">
+              <option>cinématique</option>
+              <option>film d'animation</option>
+              <option>documentaire</option>
+              <option>anime japonais</option>
+              <option>film noir</option>
+              <option>science-fiction</option>
+              <option>conte pour enfants</option>
+              <option>horreur</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Langue de la narration</span>
+            <select id="language" name="language">
+              <option value="auto">Comme l'idée</option>
+              <option value="fr">Français</option>
+              <option value="en">Anglais</option>
+              <option value="ar">Arabe</option>
+              <option value="es">Espagnol</option>
+              <option value="de">Allemand</option>
+              <option value="it">Italien</option>
+              <option value="pt">Portugais</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Nombre de plans : <output id="scenes-out">6</output></span>
+            <input id="num_scenes" name="num_scenes" type="range" min="2" max="12" value="6">
+          </label>
+          <label class="field">
+            <span>Format</span>
+            <select id="aspect" name="aspect">
+              <option value="16:9">Paysage 16:9 (YouTube)</option>
+              <option value="9:16">Portrait 9:16 (TikTok, Reels)</option>
+            </select>
+          </label>
+        </div>
+
+        <fieldset class="modes">
+          <legend>Visuels</legend>
+          <label class="mode">
+            <input type="radio" name="visual_mode" value="local" checked>
+            <span><strong>Illustrations animées</strong><small>Gratuit, généré sur votre machine</small></span>
+          </label>
+          <label class="mode">
+            <input type="radio" name="visual_mode" value="image">
+            <span><strong>Images IA</strong><small>Une image réaliste par plan (Replicate)</small></span>
+          </label>
+          <label class="mode">
+            <input type="radio" name="visual_mode" value="video">
+            <span><strong>Vidéo IA</strong><small>Un vrai clip vidéo par plan (Replicate, plus lent)</small></span>
+          </label>
+        </fieldset>
+
+        <label class="check">
+          <input id="subtitles" name="subtitles" type="checkbox" checked>
+          <span>Incruster les sous-titres</span>
+        </label>
+
+        <button id="submit" type="submit" class="primary">Créer le film</button>
+      </form>
+    </section>
+
+    <section class="card" id="job" hidden aria-live="polite">
+      <div class="job-head">
+        <h2 id="job-title">Fabrication en cours</h2>
+        <span id="job-status" class="pill"></span>
+      </div>
+      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+        <div id="progress-bar"></div>
+      </div>
+      <p id="job-message" class="muted"></p>
+      <div id="job-error" class="notice error" hidden></div>
+      <ul id="job-warnings" class="notice warn" hidden></ul>
+
+      <div id="player" hidden>
+        <video id="video" controls playsinline></video>
+        <div class="actions">
+          <a id="download" class="button primary" download>Télécharger le MP4</a>
+          <a id="download-srt" class="button" download hidden>Sous-titres (.srt)</a>
+        </div>
+      </div>
+
+      <div id="script" hidden>
+        <p id="logline" class="logline"></p>
+        <ol id="scenes" class="scenes"></ol>
+      </div>
+    </section>
+
+    <section class="card wide" aria-labelledby="history-title">
+      <h2 id="history-title">Mes films</h2>
+      <p id="history-empty" class="muted">Aucun film pour l'instant.</p>
+      <ul id="history" class="history"></ul>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
