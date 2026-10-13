@@ -1,0 +1,1173 @@
+<title>Studio de films IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: a screening table. The screen and its transport on the left, the production desk
+   (new film form) on the right, the screenplay typed in Courier below, then the film library. */
+:root {
+  --paper: #e9ecf1;
+  --surface: #ffffff;
+  --surface-2: #f3f5f8;
+  --ink: #151922;
+  --muted: #586174;
+  --line: #d2d7e0;
+  --tungsten: #b8571a;
+  --tungsten-soft: #f6e3d4;
+  --on-tungsten: #ffffff;
+  --screen: #07080b;
+  --ok: #1f7a4d;
+  --warn: #8a5a00;
+  --warn-bg: #fbefd2;
+  --err: #b42318;
+  --err-bg: #fde4e1;
+  --display: "Big Shoulders Display", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --script: "Courier Prime", "Courier New", Courier, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #11141a;
+    --surface: #191d26;
+    --surface-2: #1f2430;
+    --ink: #e8ebf1;
+    --muted: #9aa3b4;
+    --line: #2c3240;
+    --tungsten: #f0883e;
+    --tungsten-soft: #3a2616;
+    --on-tungsten: #1b0f05;
+    --screen: #050608;
+    --ok: #5fd39a;
+    --warn: #f3c25b;
+    --warn-bg: #3a2f14;
+    --err: #ff8a80;
+    --err-bg: #3b1a1a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #11141a;
+  --surface: #191d26;
+  --surface-2: #1f2430;
+  --ink: #e8ebf1;
+  --muted: #9aa3b4;
+  --line: #2c3240;
+  --tungsten: #f0883e;
+  --tungsten-soft: #3a2616;
+  --on-tungsten: #1b0f05;
+  --screen: #050608;
+  --ok: #5fd39a;
+  --warn: #f3c25b;
+  --warn-bg: #3a2f14;
+  --err: #ff8a80;
+  --err-bg: #3b1a1a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font: 15px/1.55 var(--body);
+  padding-inline: 16px;
+  padding-block: 0 48px;
+}
+.wrap { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+
+.masthead { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 24px; padding-top: 28px; }
+.masthead h1 {
+  margin: 0; font-family: var(--display); font-weight: 800; text-transform: uppercase;
+  font-size: clamp(2.2rem, 6vw, 3.6rem); line-height: 0.9; letter-spacing: 0.01em; text-wrap: balance;
+}
+.masthead h1 span { color: var(--tungsten); }
+.masthead p { margin: 0; max-width: 52ch; color: var(--muted); }
+
+.studio { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 920px) { .studio { grid-template-columns: minmax(0, 1fr); } }
+
+/* Screen */
+.stage { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.screen {
+  position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 100%;
+  background: var(--screen); border-radius: 6px; overflow: hidden;
+  box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.6);
+}
+.screen.portrait { aspect-ratio: 9 / 16; width: min(100%, calc(72vh * 9 / 16)); margin-inline: auto; }
+.screen canvas { display: block; width: 100%; height: 100%; }
+.screen .bigplay {
+  position: absolute; left: 18px; bottom: 18px; width: 64px; height: 64px; border-radius: 50%;
+  border: 0; background: var(--tungsten); color: var(--on-tungsten); cursor: pointer;
+  display: grid; place-items: center; box-shadow: 0 6px 30px rgba(0, 0, 0, 0.45);
+}
+.screen .bigplay svg { width: 30px; height: 30px; margin-left: 4px; }
+.rec-badge {
+  position: absolute; top: 12px; left: 12px; padding: 3px 10px; border-radius: 4px;
+  background: #c62828; color: #fff; font: 600 12px/1.6 var(--body); letter-spacing: 0.08em;
+}
+
+.transport { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.transport .spacer { flex: 1; }
+.timecode {
+  font: 700 15px/1 var(--script); font-variant-numeric: tabular-nums; letter-spacing: 0.04em;
+  padding: 8px 10px; border-radius: 6px; background: var(--surface); border: 1px solid var(--line);
+}
+.tbtn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 6px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  font: 500 14px/1 var(--body); cursor: pointer;
+}
+.tbtn svg { width: 16px; height: 16px; }
+.tbtn[aria-pressed="false"] { color: var(--muted); }
+.tbtn[aria-pressed="false"] .on { display: none; }
+.tbtn[aria-pressed="true"] .off { display: none; }
+.tbtn.rec { border-color: var(--tungsten); color: var(--tungsten); }
+.tbtn:disabled { opacity: 0.5; cursor: not-allowed; }
+.scrub { width: 100%; accent-color: var(--tungsten); }
+
+.strip { display: flex; gap: 6px; overflow-x: auto; padding: 8px; background: var(--screen); border-radius: 6px; }
+.strip button {
+  flex: 0 0 auto; position: relative; padding: 0; border: 2px solid transparent; border-radius: 3px;
+  background: none; cursor: pointer; line-height: 0;
+}
+.strip button[aria-current="true"] { border-color: var(--tungsten); }
+.strip canvas { width: 104px; height: auto; border-radius: 2px; }
+.strip.portrait canvas { width: 54px; }
+.strip span {
+  position: absolute; left: 4px; bottom: 4px; font: 700 11px/1.2 var(--script); color: #fff;
+  background: rgba(0, 0, 0, 0.6); padding: 1px 4px; border-radius: 2px;
+}
+.note { margin: 0; font-size: 13px; color: var(--muted); }
+
+/* Desk */
+.desk { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.desk h2, .section-title {
+  margin: 0; font-family: var(--display); font-weight: 700; text-transform: uppercase;
+  font-size: 1.6rem; letter-spacing: 0.02em; line-height: 1;
+}
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field > span { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+textarea, select {
+  width: 100%; background: var(--surface-2); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 6px; padding: 9px 11px; font: inherit;
+}
+textarea { resize: vertical; min-height: 92px; }
+textarea:focus-visible, select:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--tungsten); outline-offset: 2px; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+input[type="range"] { width: 100%; accent-color: var(--tungsten); }
+.primary {
+  border: 0; border-radius: 6px; padding: 12px 16px; background: var(--tungsten); color: var(--on-tungsten);
+  font: 600 15px/1 var(--body); cursor: pointer;
+}
+.primary:disabled { opacity: 0.55; cursor: progress; }
+.secondary { border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; background: none; color: var(--ink); font: 500 14px/1 var(--body); cursor: pointer; }
+.status { display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line); }
+.status strong { font-weight: 600; }
+.status .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.msg { padding: 10px 12px; border-radius: 6px; font-size: 14px; }
+.msg.warn { background: var(--warn-bg); color: var(--warn); }
+.msg.err { background: var(--err-bg); color: var(--err); }
+.msg.ok { background: var(--surface-2); color: var(--ok); border: 1px solid var(--line); }
+
+/* Screenplay page */
+.lower { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 920px) { .lower { grid-template-columns: minmax(0, 1fr); } }
+.script {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
+  padding: clamp(20px, 5vw, 56px) clamp(16px, 7vw, 84px); font: 16px/1.5 var(--script); min-width: 0;
+}
+.script .eyebrow { font: 600 12px/1 var(--body); text-transform: uppercase; letter-spacing: 0.12em; color: var(--tungsten); margin: 0 0 18px; text-align: center; }
+.script h3 { margin: 0; text-align: center; text-transform: uppercase; font: 700 18px/1.3 var(--script); text-wrap: balance; }
+.script .logline { text-align: center; font-style: italic; color: var(--muted); margin: 8px auto 32px; max-width: 46ch; }
+.shot { margin-bottom: 26px; }
+.shot .slug { font-weight: 700; text-transform: uppercase; display: flex; gap: 12px; justify-content: space-between; }
+.shot .slug small { font-weight: 400; color: var(--muted); white-space: nowrap; }
+.shot .action { margin: 8px 0 0; }
+.shot .cue { margin: 14px 0 0; text-align: center; text-transform: uppercase; }
+.shot .dialogue { margin: 2px auto 0; max-width: 36ch; }
+
+.library { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.films { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.films li { display: flex; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
+.films li[aria-current="true"] { border-color: var(--tungsten); }
+.films .open { flex: 1; min-width: 0; text-align: left; background: none; border: 0; padding: 0; color: var(--ink); cursor: pointer; font: inherit; }
+.films .open strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.films .open small { color: var(--muted); }
+.films .del { background: none; border: 0; color: var(--muted); cursor: pointer; font: 13px var(--body); padding: 4px; }
+.films .del.confirm { color: var(--err); font-weight: 600; }
+.tag { font: 600 11px/1 var(--body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--tungsten); background: var(--tungsten-soft); padding: 4px 6px; border-radius: 3px; }
+
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <h1>Studio de films <span>IA</span></h1>
+    <p>Écrivez une idée en une phrase. Claude écrit le scénario, puis le film est dessiné, narré, mis en musique et monté ici même, dans votre navigateur.</p>
+  </header>
+
+  <div class="studio">
+    <section class="stage" aria-label="Écran">
+      <div class="screen" id="screen">
+        <canvas id="canvas" width="1280" height="720" aria-label="Film"></canvas>
+        <button class="bigplay" id="bigplay" type="button" aria-label="Lire le film">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15l13-7.5z"/></svg>
+        </button>
+        <span class="rec-badge" id="recBadge" hidden>● ENREGISTREMENT</span>
+      </div>
+      <input class="scrub" id="scrub" type="range" min="0" max="1000" value="0" aria-label="Position dans le film">
+      <div class="transport">
+        <button class="tbtn" id="play" type="button" aria-label="Lecture">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path id="playIcon" fill="currentColor" d="M7 4.5v15l13-7.5z"/></svg>
+          <span id="playLabel">Lecture</span>
+        </button>
+        <button class="tbtn" id="restart" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 5h2v14H6zm3.5 7L19 5v14z"/></svg>
+          Début
+        </button>
+        <span class="timecode" id="timecode" aria-label="Timecode">00:00:00:00</span>
+        <span class="spacer"></span>
+        <button class="tbtn" id="voiceBtn" type="button" aria-pressed="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
+          <span class="on">Voix</span><span class="off">Voix coupée</span>
+        </button>
+        <button class="tbtn" id="musicBtn" type="button" aria-pressed="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 18.5A2.5 2.5 0 1 1 7 16V5l11-2v12.5a2.5 2.5 0 1 1-2-2.45V7.2L9 8.4z"/></svg>
+          <span class="on">Musique</span><span class="off">Musique coupée</span>
+        </button>
+        <button class="tbtn rec" id="recordBtn" type="button" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6" fill="currentColor"/></svg>
+          Enregistrer la vidéo
+        </button>
+      </div>
+      <div class="strip" id="strip" aria-label="Plans du film"></div>
+      <p class="note" id="recordNote">L'enregistrement rejoue le film et en fait un fichier vidéo avec l'image, les sous-titres et la musique. La voix de lecture du navigateur ne peut pas être incluse dans le fichier.</p>
+    </section>
+
+    <aside class="desk" aria-labelledby="deskTitle">
+      <h2 id="deskTitle">Nouveau film</h2>
+      <div class="msg warn" id="noClaude" hidden>Claude n'est pas disponible dans cette vue. Ouvrez la page depuis claude.ai, connecté à votre compte, pour écrire de nouveaux films. Le film d'exemple reste lisible.</div>
+      <form id="form" novalidate>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <label class="field">
+            <span>Votre idée</span>
+            <textarea id="idea" maxlength="1500" placeholder="Ex. : Une vieille gardienne de phare reçoit une lettre écrite il y a cinquante ans."></textarea>
+          </label>
+          <div class="pair">
+            <label class="field">
+              <span>Style</span>
+              <select id="style">
+                <option>cinématique</option>
+                <option>conte pour enfants</option>
+                <option>documentaire</option>
+                <option>science-fiction</option>
+                <option>film noir</option>
+                <option>horreur</option>
+                <option>comédie</option>
+                <option>poème visuel</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Langue</span>
+              <select id="language">
+                <option value="auto">Comme l'idée</option>
+                <option value="fr">Français</option>
+                <option value="ar">Arabe</option>
+                <option value="en">Anglais</option>
+                <option value="es">Espagnol</option>
+                <option value="de">Allemand</option>
+                <option value="it">Italien</option>
+                <option value="pt">Portugais</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Plans : <output id="shotsOut">5</output></span>
+              <input id="shots" type="range" min="3" max="8" value="5">
+            </label>
+            <label class="field">
+              <span>Format</span>
+              <select id="aspect">
+                <option value="16:9">Paysage 16:9</option>
+                <option value="9:16">Vertical 9:16</option>
+              </select>
+            </label>
+          </div>
+          <button class="primary" id="create" type="submit">Créer le film</button>
+        </div>
+      </form>
+      <div class="status" id="status" hidden aria-live="polite">
+        <div class="row"><strong id="statusText">Claude écrit le scénario…</strong><span class="timecode" id="elapsed">0 s</span></div>
+        <span class="note">Comptez de 20 secondes à une minute.</span>
+        <button class="secondary" id="stop" type="button">Arrêter</button>
+      </div>
+      <div class="msg" id="message" hidden role="status"></div>
+    </aside>
+  </div>
+
+  <div class="lower">
+    <article class="script" id="script" aria-label="Scénario"></article>
+    <section class="library" aria-labelledby="libTitle">
+      <h2 class="section-title" id="libTitle">Mes films</h2>
+      <ul class="films" id="films"></ul>
+      <p class="note">Vos films sont gardés dans ce navigateur.</p>
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+// ------------------------------------------------------------------ données
+
+const EXAMPLE = {
+  id: "exemple",
+  example: true,
+  aspect: "16:9",
+  style: "conte pour enfants",
+  title: "Le Dernier Jardin",
+  logline: "Dans une ville abandonnée, un petit robot jardinier part à la recherche de la dernière fleur du monde.",
+  language: "fr",
+  scenes: [
+    { heading: "EXT. VILLE ABANDONNÉE — AUBE", setting: "city", camera: "zoom_in", colors: ["#1d2b64", "#f8cdda", "#ffb347"], duration_seconds: 6,
+      action: "Les tours vides s'allument une à une sous le premier soleil.",
+      narration: "Dans la ville silencieuse, un petit robot jardinier se réveille. Depuis cent ans, il arrose des pots vides." },
+    { heading: "EXT. FORÊT DE BÉTON — MATIN", setting: "forest", camera: "pan_left", colors: ["#134e5e", "#71b280", "#f6f7c4"], duration_seconds: 6,
+      action: "Le robot traverse une forêt qui a poussé entre les ruines.",
+      narration: "Un matin, un parfum inconnu traverse la brume. Le robot quitte la ville pour la première fois." },
+    { heading: "EXT. MONTAGNES — MIDI", setting: "mountains", camera: "zoom_out", colors: ["#3a6186", "#89253e", "#ffd194"], duration_seconds: 6,
+      action: "Au sommet, le vent soulève la poussière dorée.",
+      narration: "Il grimpe des jours entiers. Ses roues grincent, mais le parfum devient plus fort à chaque pas." },
+    { heading: "EXT. BORD DE MER — CRÉPUSCULE", setting: "sea", camera: "pan_right", colors: ["#2c3e50", "#fd746c", "#ffd200"], duration_seconds: 6,
+      action: "Sur la falaise, une seule fleur rouge tremble face à l'océan.",
+      narration: "Au bord de la mer, il la trouve enfin : une fleur, une seule, qui l'attendait." },
+    { heading: "EXT. CIEL ÉTOILÉ — NUIT", setting: "space", camera: "static", colors: ["#000428", "#004e92", "#c471ed"], duration_seconds: 7,
+      action: "Le robot veille la fleur sous un ciel immense.",
+      narration: "Cette nuit-là, le robot ne rentre pas. Il s'assoit, et pour la première fois, il a quelque chose à protéger." },
+  ],
+};
+
+const SETTINGS = ["city", "sea", "forest", "mountains", "space"];
+const CAMERAS = ["zoom_in", "zoom_out", "pan_left", "pan_right", "static"];
+const END_TITLES = { fr: "Fin", es: "Fin", it: "Fine", de: "Ende", pt: "Fim", ar: "النهاية", en: "The End" };
+const FPS = 24, TITLE_S = 4, END_S = 3.5, FADE_S = 0.5;
+const STORE_KEY = "studio-films-ia-v1";
+
+// ------------------------------------------------------------------ outils
+
+const $ = (id) => document.getElementById(id);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ease = (t) => t * t * (3 - 2 * t);
+const hexToRgb = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+const mix = (a, b, t) => a.map((x, i) => Math.round(x + (b[i] - x) * t));
+const rgb = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+
+function hash(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function rng(seed) {
+  let a = seed || 1;
+  return () => {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const uni = (r, a, b) => a + (b - a) * r();
+
+function makeCanvas(w, h) {
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  return c;
+}
+
+function wrapLines(ctx, text, maxWidth) {
+  const words = String(text).split(/\s+/).filter(Boolean);
+  const lines = [];
+  let cur = "";
+  for (const w of words) {
+    const cand = cur ? cur + " " + w : w;
+    if (cur && ctx.measureText(cand).width > maxWidth) { lines.push(cur); cur = w; } else cur = cand;
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+
+function splitSentences(text, maxChars = 80) {
+  const out = [];
+  for (const sentence of String(text).trim().split(/(?<=[.!?…؟])\s+/)) {
+    let cur = "";
+    for (const w of sentence.split(/\s+/).filter(Boolean)) {
+      if (cur && cur.length + w.length + 1 > maxChars) { out.push(cur); cur = w; } else cur = cur ? cur + " " + w : w;
+    }
+    if (cur) out.push(cur);
+  }
+  return out;
+}
+
+// ------------------------------------------------------------------ peinture des décors
+
+function ridge(r, width, baseY, amp, step = 8) {
+  const waves = Array.from({ length: 4 }, () => [uni(r, 0.5, 3), uni(r, 0, Math.PI * 2), uni(r, 0.3, 1)]);
+  const pts = [];
+  for (let x = 0; x <= width + step; x += step) {
+    const u = x / width;
+    const off = waves.reduce((s, [f, p, a]) => s + a * Math.sin(u * f * Math.PI * 2 + p), 0) / 2.2;
+    pts.push([x, baseY - off * amp]);
+  }
+  return pts;
+}
+function fillShape(ctx, pts, h, color) {
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for (const [x, y] of pts) ctx.lineTo(x, y);
+  ctx.lineTo(pts[pts.length - 1][0], h);
+  ctx.lineTo(0, h);
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+function paintScene(scene, W, H) {
+  const c = makeCanvas(W, H);
+  const ctx = c.getContext("2d");
+  const r = rng(hash(scene.heading + scene.action + scene.setting));
+  let [top, bottom, accent] = scene.colors.map(hexToRgb);
+  const kind = scene.setting;
+  if (kind === "space") { top = mix(top, [0, 0, 0], 0.7); bottom = mix(bottom, [0, 0, 0], 0.5); }
+
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, rgb(top));
+  sky.addColorStop(1, rgb(bottom));
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, H);
+
+  const starCount = Math.round((W * H) / (kind === "space" ? 2400 : 9000));
+  for (let i = 0; i < starCount; i++) {
+    const x = uni(r, 0, W), y = uni(r, 0, H * 0.7), s = uni(r, 0.6, 2.2);
+    ctx.fillStyle = `rgba(255,255,255,${uni(r, 0.25, 0.8)})`;
+    ctx.beginPath(); ctx.arc(x, y, s, 0, Math.PI * 2); ctx.fill();
+  }
+
+  const cx = uni(r, 0.2, 0.8) * W, cy = uni(r, 0.15, 0.42) * H;
+  const rad = uni(r, 0.06, 0.12) * Math.min(W, H) * (kind === "space" ? 2.1 : 1);
+  const glow = ctx.createRadialGradient(cx, cy, rad * 0.5, cx, cy, rad * 4);
+  glow.addColorStop(0, rgb(accent, 0.5));
+  glow.addColorStop(1, rgb(accent, 0));
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = rgb(mix(accent, [255, 255, 255], 0.35));
+  ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill();
+  if (kind === "space") {
+    ctx.save();
+    ctx.translate(cx, cy); ctx.rotate(-0.35); ctx.scale(1, 0.22);
+    ctx.strokeStyle = rgb(mix(accent, [255, 255, 255], 0.6), 0.75);
+    ctx.lineWidth = rad * 0.35;
+    ctx.beginPath(); ctx.arc(0, 0, rad * 1.75, Math.PI * 0.05, Math.PI * 0.95, true); ctx.stroke();
+    ctx.restore();
+  }
+
+  const layers = 4;
+  for (let i = 0; i < layers; i++) {
+    const depth = i / (layers - 1);
+    const col = mix(mix(bottom, accent, 0.25), [8, 8, 16], 0.35 + 0.55 * depth);
+    const baseY = H * (0.55 + 0.12 * i);
+    const layer = makeCanvas(W, H);
+    const lc = layer.getContext("2d");
+    if (kind === "city") {
+      let x = -uni(r, 0, 40);
+      while (x < W) {
+        const w = uni(r, 0.03, 0.08) * W, h = uni(r, 0.1, 0.35) * H * (1.2 - 0.2 * depth);
+        lc.fillStyle = rgb(col);
+        lc.fillRect(x, baseY - h, w, H);
+        lc.fillStyle = rgb(mix(accent, [255, 240, 200], 0.5), 0.8);
+        for (let wy = baseY - h + 10; wy < baseY; wy += 14)
+          for (let wx = x + 5; wx < x + w - 5; wx += 10) if (r() < 0.25) lc.fillRect(wx, wy, 3, 5);
+        x += w + uni(r, 0, 12);
+      }
+    } else if (kind === "sea" && i >= 1) {
+      fillShape(lc, ridge(r, W, baseY + 0.05 * H, H * 0.02, 4), H, rgb(mix(col, bottom, 0.2)));
+      lc.strokeStyle = rgb(mix(accent, [255, 255, 255], 0.4), 0.3);
+      lc.lineWidth = 2;
+      for (let k = 0; k < 40; k++) {
+        const x = uni(r, 0, W), y = uni(r, baseY + 0.06 * H, H), w = uni(r, 10, 60);
+        lc.beginPath(); lc.moveTo(x, y); lc.lineTo(x + w, y); lc.stroke();
+      }
+    } else if (kind === "forest" && i >= 1) {
+      fillShape(lc, ridge(r, W, baseY, H * 0.04), H, rgb(col));
+      lc.fillStyle = rgb(col);
+      const n = Math.round(14 + 10 * depth);
+      for (let k = 0; k < n; k++) {
+        const x = uni(r, 0, W), h = uni(r, 0.12, 0.3) * H * (0.6 + depth), w = h * uni(r, 0.25, 0.4);
+        const g = baseY + uni(r, -0.01, 0.03) * H;
+        lc.beginPath(); lc.moveTo(x, g - h); lc.lineTo(x - w / 2, g); lc.lineTo(x + w / 2, g); lc.closePath(); lc.fill();
+      }
+    } else {
+      fillShape(lc, ridge(r, W, baseY, H * (0.18 - 0.03 * i)), H, rgb(col));
+    }
+    if (depth < 1) ctx.filter = `blur(${(2.5 * (1 - depth)).toFixed(1)}px)`;
+    ctx.drawImage(layer, 0, 0);
+    ctx.filter = "none";
+  }
+
+  const vig = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.35, W / 2, H / 2, Math.max(W, H) * 0.75);
+  vig.addColorStop(0, "rgba(0,0,0,0)");
+  vig.addColorStop(1, "rgba(0,0,0,0.6)");
+  ctx.fillStyle = vig;
+  ctx.fillRect(0, 0, W, H);
+  return c;
+}
+
+function glowSprite(color) {
+  const c = makeCanvas(32, 32), ctx = c.getContext("2d");
+  const g = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+  g.addColorStop(0, rgb(color, 1));
+  g.addColorStop(0.35, rgb(color, 0.55));
+  g.addColorStop(1, rgb(color, 0));
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 32, 32);
+  return c;
+}
+
+// ------------------------------------------------------------------ film et timeline
+
+const canvas = $("canvas");
+const ctx = canvas.getContext("2d");
+let film = null;      // scénario actuel
+let built = null;     // décors et timeline calculés
+
+function estimateSpeech(text) { return String(text).length / 14; }
+
+function buildFilm(sp) {
+  const [W, H] = sp.aspect === "9:16" ? [720, 1280] : [1280, 720];
+  canvas.width = W; canvas.height = H;
+  $("screen").classList.toggle("portrait", sp.aspect === "9:16");
+  $("strip").classList.toggle("portrait", sp.aspect === "9:16");
+  const AW = Math.round(W * 1.3), AH = Math.round(H * 1.3);
+  const items = [{ type: "title", dur: TITLE_S }];
+  const scenes = sp.scenes.map((s, i) => {
+    const art = paintScene(s, AW, AH);
+    const r = rng(hash(s.narration) + 7);
+    const sprite = glowSprite(mix(hexToRgb(s.colors[2]), [255, 255, 255], 0.5));
+    const particles = Array.from({ length: 26 }, () => ({
+      x: uni(r, 0, W), y: uni(r, 0, H), vx: uni(r, -12, 12), vy: uni(r, -24, -6), s: uni(r, 8, 22), a: uni(r, 0.25, 0.65),
+    }));
+    const dur = Math.max(s.duration_seconds, estimateSpeech(s.narration) + 1.4);
+    items.push({ type: "scene", index: i, dur });
+    return { art, sprite, particles, chunks: splitSentences(s.narration) };
+  });
+  items.push({ type: "end", dur: END_S });
+  let t = 0;
+  for (const it of items) { it.start = t; t += it.dur; }
+  const titleBg = makeCanvas(W, H);
+  const tctx = titleBg.getContext("2d");
+  tctx.filter = "blur(14px)";
+  tctx.drawImage(scenes[0].art, -40, -40, W + 80, H + 80);
+  tctx.filter = "none";
+  tctx.fillStyle = "rgba(0,0,0,0.5)";
+  tctx.fillRect(0, 0, W, H);
+  built = { W, H, items, scenes, titleBg, total: t };
+  renderStrip();
+}
+
+function cameraBox(camera, t, w, h) {
+  const e = ease(clamp(t, 0, 1));
+  let zoom = 1.03 + 0.04 * e, cx = 0.5;
+  if (camera === "zoom_in") zoom = 1 + 0.18 * e;
+  else if (camera === "zoom_out") zoom = 1.18 - 0.18 * e;
+  else if (camera === "pan_left" || camera === "pan_right") {
+    zoom = 1.15;
+    const span = (1 - 1 / zoom) / 2;
+    cx = 0.5 + span * (1 - 2 * e) * (camera === "pan_left" ? 1 : -1);
+  }
+  const bw = w / zoom, bh = h / zoom;
+  return [cx * w - bw / 2, (h - bh) / 2, bw, bh];
+}
+
+function itemAt(t) {
+  const items = built.items;
+  for (let i = items.length - 1; i >= 0; i--) if (t >= items[i].start) return i;
+  return 0;
+}
+
+function displayFont(px) { return `800 ${px}px "Big Shoulders Display", "Arial Narrow", sans-serif`; }
+function bodyFont(px, w = 500, style = "normal") { return `${style} ${w} ${px}px "IBM Plex Sans", "Segoe UI", sans-serif`; }
+
+function drawCard(title, lines, eyebrow) {
+  const { W, H } = built;
+  ctx.drawImage(built.titleBg, 0, 0);
+  ctx.textAlign = "center";
+  ctx.textBaseline = "alphabetic";
+  const base = Math.min(W, H);
+  const tSize = Math.round(base * 0.15);
+  ctx.font = displayFont(tSize);
+  const tLines = wrapLines(ctx, title.toUpperCase(), W * 0.86);
+  ctx.font = bodyFont(Math.round(base * 0.034), 400, "italic");
+  const sLines = lines ? wrapLines(ctx, lines, W * 0.72) : [];
+  const eSize = Math.round(base * 0.026);
+  const block = tLines.length * tSize * 0.95 + sLines.length * base * 0.05 + (eyebrow ? eSize * 2.4 : 0);
+  let y = (H - block) / 2;
+  if (eyebrow) {
+    ctx.font = bodyFont(eSize, 600);
+    ctx.fillStyle = "rgba(255,200,160,0.95)";
+    ctx.fillText(eyebrow.toUpperCase().split("").join(" "), W / 2, y + eSize);
+    y += eSize * 2.4;
+  }
+  ctx.font = displayFont(tSize);
+  ctx.fillStyle = "#ffffff";
+  for (const l of tLines) { y += tSize * 0.95; ctx.fillText(l, W / 2, y); }
+  ctx.font = bodyFont(Math.round(base * 0.034), 400, "italic");
+  ctx.fillStyle = "rgba(235,235,245,0.92)";
+  y += base * 0.03;
+  for (const l of sLines) { y += base * 0.05; ctx.fillText(l, W / 2, y); }
+}
+
+function drawSubtitle(text) {
+  const { W, H } = built;
+  const size = Math.round(Math.min(W, H) * 0.042);
+  ctx.font = bodyFont(size, 600);
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  const lines = wrapLines(ctx, text, W * 0.84);
+  const lh = size * 1.32;
+  const boxH = lines.length * lh + size * 0.7;
+  const boxW = Math.min(W * 0.92, Math.max(...lines.map((l) => ctx.measureText(l).width)) + size * 1.4);
+  const y0 = H - boxH - H * 0.06;
+  ctx.fillStyle = "rgba(0,0,0,0.58)";
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(W / 2 - boxW / 2, y0, boxW, boxH, size * 0.3); else ctx.rect(W / 2 - boxW / 2, y0, boxW, boxH);
+  ctx.fill();
+  ctx.fillStyle = "#ffffff";
+  lines.forEach((l, i) => ctx.fillText(l, W / 2, y0 + size * 0.35 + lh * (i + 0.5)));
+}
+
+function drawFrame(t) {
+  if (!built) return;
+  const { W, H, items } = built;
+  const idx = itemAt(t);
+  const it = items[idx];
+  const local = t - it.start;
+  ctx.save();
+  if (it.type === "title") {
+    drawCard(film.title, film.logline, "Un film écrit par Claude");
+  } else if (it.type === "end") {
+    drawCard(END_TITLES[film.language] || "The End", null, null);
+  } else {
+    const sc = built.scenes[it.index];
+    const scene = film.scenes[it.index];
+    const [sx, sy, sw, sh] = cameraBox(scene.camera, local / it.dur, sc.art.width, sc.art.height);
+    ctx.drawImage(sc.art, sx, sy, sw, sh, 0, 0, W, H);
+    for (const p of sc.particles) {
+      const x = ((p.x + p.vx * local) % (W + 40) + W + 40) % (W + 40) - 20;
+      const y = ((p.y + p.vy * local) % (H + 40) + H + 40) % (H + 40) - 20;
+      ctx.globalAlpha = p.a;
+      ctx.drawImage(sc.sprite, x - p.s / 2, y - p.s / 2, p.s, p.s);
+    }
+    ctx.globalAlpha = 1;
+    if (state.subtitles) {
+      const spoken = Math.max(1, Math.min(it.dur - 0.6, estimateSpeech(scene.narration) + 0.4));
+      const total = sc.chunks.reduce((s, c) => s + c.length, 0) || 1;
+      let acc = 0, chunk = sc.chunks[sc.chunks.length - 1];
+      const pos = clamp((local - 0.4) / spoken, 0, 1) * total;
+      for (const c of sc.chunks) { acc += c.length; if (pos <= acc) { chunk = c; break; } }
+      if (chunk && local > 0.3) drawSubtitle(chunk);
+    }
+  }
+  const fadeIn = clamp(local / FADE_S, 0, 1), fadeOut = clamp((it.dur - local) / FADE_S, 0, 1);
+  const shade = 1 - Math.min(fadeIn, fadeOut);
+  if (shade > 0) { ctx.fillStyle = `rgba(0,0,0,${shade})`; ctx.fillRect(0, 0, W, H); }
+  ctx.restore();
+}
+
+// Amorce de pellicule pendant que Claude écrit : un compte à rebours qui tourne.
+function drawLeader(seconds) {
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.32;
+  ctx.fillStyle = "#2b2e35";
+  ctx.fillRect(0, 0, W, H);
+  const frac = seconds % 1;
+  ctx.fillStyle = "#3d414a";
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, R * 1.6, -Math.PI / 2, -Math.PI / 2 + frac * Math.PI * 2); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "#d9d9d9"; ctx.lineWidth = Math.max(2, R * 0.025);
+  ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.moveTo(cx, 0); ctx.lineTo(cx, H); ctx.stroke();
+  for (const k of [1, 0.86]) { ctx.beginPath(); ctx.arc(cx, cy, R * k, 0, Math.PI * 2); ctx.stroke(); }
+  ctx.fillStyle = "#f2f2f2";
+  ctx.font = displayFont(Math.round(R * 1.15));
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText(String(8 - (Math.floor(seconds) % 7)), cx, cy + R * 0.06);
+}
+
+// ------------------------------------------------------------------ musique (Web Audio)
+
+const audio = { ctx: null, master: null, dest: null, oscs: [], on: true };
+function ensureAudio() {
+  if (audio.ctx) return audio.ctx.state === "suspended" ? audio.ctx.resume() : null;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  try {
+    const ac = new AC();
+    const master = ac.createGain(); master.gain.value = 0;
+    const filter = ac.createBiquadFilter(); filter.type = "lowpass"; filter.frequency.value = 900; filter.Q.value = 0.4;
+    filter.connect(master);
+    master.connect(ac.destination);
+    let dest = null;
+    try { dest = ac.createMediaStreamDestination(); master.connect(dest); } catch {}
+    const lfo = ac.createOscillator(); lfo.frequency.value = 0.08;
+    const lfoGain = ac.createGain(); lfoGain.gain.value = 350;
+    lfo.connect(lfoGain).connect(filter.frequency); lfo.start();
+    const types = ["triangle", "sine", "sine", "triangle"];
+    audio.oscs = types.map((type, i) => {
+      const o = ac.createOscillator(); o.type = type; o.detune.value = (i - 1.5) * 4;
+      const g = ac.createGain(); g.gain.value = i === 0 ? 0.35 : 0.22;
+      o.connect(g).connect(filter); o.start();
+      return o;
+    });
+    Object.assign(audio, { ctx: ac, master, dest });
+  } catch { audio.ctx = null; }
+}
+function chordFor(itemIndex) {
+  const minor = !/conte|comédie|documentaire/i.test(film?.style || "");
+  const prog = minor ? [[0, 3, 7], [-4, 0, 3], [3, 7, 10], [-2, 2, 5]] : [[0, 4, 7], [7, 11, 14], [9, 12, 16], [5, 9, 12]];
+  const root = minor ? 57 : 48; // la ou do
+  const tri = prog[itemIndex % prog.length];
+  return [tri[0] - 12, tri[0], tri[1], tri[2]].map((s) => 440 * Math.pow(2, (root + s - 69) / 12));
+}
+function updateMusic(itemIndex) {
+  if (!audio.ctx) return;
+  const now = audio.ctx.currentTime;
+  chordFor(itemIndex).forEach((f, i) => audio.oscs[i]?.frequency.setTargetAtTime(f, now, 0.6));
+  audio.master.gain.setTargetAtTime(audio.on && state.playing ? 0.07 : 0, now, 0.4);
+}
+
+// ------------------------------------------------------------------ voix (synthèse du navigateur)
+
+const speech = { active: false, current: null, supported: "speechSynthesis" in window };
+function pickVoice(lang) {
+  const voices = speech.supported ? speechSynthesis.getVoices() : [];
+  return voices.find((v) => v.lang?.toLowerCase().startsWith(lang) && /google|natural|premium|enhanced/i.test(v.name))
+    || voices.find((v) => v.lang?.toLowerCase().startsWith(lang)) || null;
+}
+function speak(text) {
+  if (!speech.supported || !state.voice) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = film.language;
+    const v = pickVoice(film.language);
+    if (v) u.voice = v;
+    u.rate = 0.98;
+    u.onend = u.onerror = () => { if (speech.current === u) speech.active = false; };
+    speech.current = u;
+    speech.active = true;
+    speechSynthesis.speak(u);
+  } catch { speech.active = false; }
+}
+function silence() {
+  speech.active = false; speech.current = null;
+  if (speech.supported) try { speechSynthesis.cancel(); } catch {}
+}
+
+// ------------------------------------------------------------------ lecteur
+
+const state = { t: TITLE_S * 0.5, playing: false, voice: true, subtitles: true, item: -1, hold: 0, last: 0, recording: null, leader: null };
+
+function setPlaying(on) {
+  state.playing = on;
+  $("bigplay").hidden = on;
+  $("playLabel").textContent = on ? "Pause" : "Lecture";
+  $("play").setAttribute("aria-label", on ? "Pause" : "Lecture");
+  $("playIcon").setAttribute("d", on ? "M6 5h4v14H6zm8 0h4v14h-4z" : "M7 4.5v15l13-7.5z");
+  if (on) {
+    ensureAudio();
+    state.last = performance.now();
+    const idx = itemAt(state.t);
+    const it = built.items[idx];
+    state.item = idx;
+    if (it.type === "scene" && (state.t - it.start) / it.dur < 0.35) speak(film.scenes[it.index].narration);
+    requestAnimationFrame(tick);
+  } else {
+    silence();
+  }
+  if (built) updateMusic(itemAt(state.t));
+}
+
+function seek(t) {
+  state.t = clamp(t, 0, built.total);
+  state.hold = 0;
+  state.item = itemAt(state.t);
+  silence();
+  const it = built.items[state.item];
+  if (state.playing && it.type === "scene") speak(film.scenes[it.index].narration);
+  updateMusic(state.item);
+  drawFrame(state.t);
+  syncUi();
+}
+
+function tick(now) {
+  if (!state.playing) return;
+  const dt = Math.min(0.1, (now - state.last) / 1000);
+  state.last = now;
+  const items = built.items;
+  const it = items[state.item];
+  const end = it.start + it.dur;
+  let next = state.t + dt;
+  // On attend la fin de la phrase en cours avant de changer de plan (8 s au plus).
+  if (next >= end - 0.05 && it.type === "scene" && speech.active && state.hold < 8 && !state.recording) {
+    state.hold += dt;
+    next = Math.min(next, end - 0.05);
+  }
+  state.t = next;
+  if (state.t >= built.total) {
+    state.t = built.total;
+    drawFrame(built.total - 0.001);
+    setPlaying(false);
+    if (state.recording) finishRecording();
+    syncUi();
+    return;
+  }
+  const idx = itemAt(state.t);
+  if (idx !== state.item) {
+    state.item = idx; state.hold = 0;
+    const cur = items[idx];
+    if (cur.type === "scene") speak(film.scenes[cur.index].narration); else silence();
+    updateMusic(idx);
+  }
+  drawFrame(state.t);
+  syncUi();
+  requestAnimationFrame(tick);
+}
+
+function syncUi() {
+  if (!built) return;
+  const t = state.t;
+  const f = Math.floor(t * FPS);
+  const pad = (n) => String(n).padStart(2, "0");
+  $("timecode").textContent = `${pad(Math.floor(f / (FPS * 3600)))}:${pad(Math.floor(f / (FPS * 60)) % 60)}:${pad(Math.floor(f / FPS) % 60)}:${pad(f % FPS)}`;
+  $("scrub").value = String(Math.round((t / built.total) * 1000));
+  const it = built.items[itemAt(t)];
+  const active = it.type === "scene" ? it.index : -1;
+  for (const b of $("strip").children) b.setAttribute("aria-current", String(Number(b.dataset.index) === active));
+}
+
+function renderStrip() {
+  const strip = $("strip");
+  strip.replaceChildren(...built.scenes.map((sc, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.dataset.index = String(i);
+    b.setAttribute("aria-label", `Aller au plan ${i + 1}`);
+    const th = makeCanvas(Math.round(built.W / 6), Math.round(built.H / 6));
+    th.getContext("2d").drawImage(sc.art, 0, 0, th.width, th.height);
+    const n = document.createElement("span");
+    n.textContent = String(i + 1).padStart(2, "0");
+    b.append(th, n);
+    b.addEventListener("click", () => {
+      if (state.recording) return;
+      seek(built.items.find((x) => x.type === "scene" && x.index === i).start + 0.01);
+    });
+    return b;
+  }));
+}
+
+// ------------------------------------------------------------------ scénario affiché
+
+function renderScript() {
+  const el = $("script");
+  const nodes = [];
+  const add = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; n.textContent = text; nodes.push(n); return n; };
+  add("p", "eyebrow", film.example ? "Film d'exemple" : "Scénario écrit par Claude");
+  add("h3", "", film.title);
+  add("p", "logline", film.logline);
+  film.scenes.forEach((s, i) => {
+    const shot = document.createElement("div");
+    shot.className = "shot";
+    const slug = document.createElement("div");
+    slug.className = "slug";
+    const h = document.createElement("span"); h.textContent = `${i + 1}. ${s.heading}`;
+    const sm = document.createElement("small"); sm.textContent = `${Math.round(built.items[i + 1].dur)} s`;
+    slug.append(h, sm);
+    const action = document.createElement("p"); action.className = "action"; action.textContent = s.action;
+    const cue = document.createElement("p"); cue.className = "cue"; cue.textContent = film.language === "fr" ? "Narrateur (V.O.)" : "Narrator (V.O.)";
+    const dia = document.createElement("p"); dia.className = "dialogue"; dia.textContent = s.narration;
+    shot.append(slug, action, cue, dia);
+    nodes.push(shot);
+  });
+  el.replaceChildren(...nodes);
+  el.dir = film.language === "ar" ? "rtl" : "ltr";
+}
+
+// ------------------------------------------------------------------ bibliothèque (navigateur)
+
+function loadLibrary() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY) || "[]").filter((f) => f && Array.isArray(f.scenes)); } catch { return []; }
+}
+function saveLibrary(list) {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(list.slice(0, 30))); } catch {}
+}
+function renderLibrary() {
+  const list = [EXAMPLE, ...loadLibrary()];
+  $("films").replaceChildren(...list.map((f) => {
+    const li = document.createElement("li");
+    li.setAttribute("aria-current", String(film?.id === f.id));
+    const open = document.createElement("button");
+    open.type = "button"; open.className = "open";
+    const t = document.createElement("strong"); t.textContent = f.title;
+    const meta = document.createElement("small");
+    meta.textContent = f.example ? `${f.scenes.length} plans · ${f.style}` :
+      `${f.scenes.length} plans · ${f.style} · ${new Date(f.createdAt).toLocaleDateString("fr-FR")}`;
+    open.append(t, meta);
+    open.addEventListener("click", () => loadFilm(f, true));
+    li.append(open);
+    if (f.example) {
+      const tag = document.createElement("span"); tag.className = "tag"; tag.textContent = "Exemple";
+      li.append(tag);
+    } else {
+      const del = document.createElement("button");
+      del.type = "button"; del.className = "del"; del.textContent = "Supprimer";
+      del.addEventListener("click", () => {
+        if (!del.classList.contains("confirm")) { del.classList.add("confirm"); del.textContent = "Confirmer ?"; return; }
+        saveLibrary(loadLibrary().filter((x) => x.id !== f.id));
+        if (film?.id === f.id) loadFilm(EXAMPLE, false);
+        renderLibrary();
+      });
+      li.append(del);
+    }
+    return li;
+  }));
+}
+
+function loadFilm(sp, scroll) {
+  if (state.recording) return;
+  setPlaying(false);
+  film = sp;
+  buildFilm(sp);
+  renderScript();
+  renderLibrary();
+  seek(TITLE_S * 0.5);
+  if (scroll) $("screen").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+}
+
+// ------------------------------------------------------------------ Claude écrit le scénario
+
+function buildPrompt(idea, style, shots, language) {
+  const lang = language === "auto" ? "la même langue que l'idée" : `la langue de code ISO « ${language} »`;
+  return `Tu es réalisateur et scénariste de courts-métrages. Écris un film court à partir de l'idée ci-dessous. Il sera fabriqué automatiquement : chaque plan devient une illustration animée (paysage stylisé avec un ciel en dégradé, un astre lumineux et des silhouettes de décor), la narration est lue par une voix de synthèse et affichée en sous-titres.
+
+Idée : ${idea}
+Style : ${style}
+Nombre de plans : exactement ${shots}
+Écris le titre, l'accroche, les intitulés, les actions et la narration dans ${lang}.
+
+Règles :
+- Un vrai arc narratif (accroche, développement, chute). La narration de chaque plan fait une à trois phrases, faites pour être dites à voix haute, et s'enchaîne avec la suivante.
+- "heading" : intitulé de plan à la manière d'un scénario, par exemple « EXT. PORT DE PÊCHE — AUBE ».
+- "action" : une phrase qui décrit ce que l'on voit à l'image.
+- "setting" : le décor principal, parmi city, sea, forest, mountains, space.
+- "camera" : le mouvement de caméra, parmi zoom_in, zoom_out, pan_left, pan_right, static. Varie-les.
+- "colors" : trois couleurs #RRGGBB : haut du ciel, bas du ciel, lumière de l'astre. Elles portent l'heure et l'émotion du plan.
+- "duration_seconds" : entre 4 et 10.
+- "language" : code ISO 639-1 de la narration.
+
+Réponds uniquement avec un objet JSON de cette forme :
+{"title": "…", "logline": "une phrase", "language": "fr", "scenes": [{"heading": "EXT. … — …", "action": "…", "narration": "…", "setting": "city", "camera": "zoom_in", "colors": ["#1d2b64", "#f8cdda", "#ffb347"], "duration_seconds": 6}]}`;
+}
+
+function normalize(raw, shots, meta) {
+  const str = (v, max = 400) => (typeof v === "string" ? v.trim().slice(0, max) : "");
+  const hex = (c) => typeof c === "string" && /^#[0-9a-fA-F]{6}$/.test(c);
+  const scenes = (Array.isArray(raw?.scenes) ? raw.scenes : []).slice(0, shots).map((s) => {
+    const colors = (Array.isArray(s?.colors) ? s.colors : []).filter(hex).slice(0, 3);
+    return {
+      heading: str(s?.heading, 120) || "EXT. — JOUR",
+      action: str(s?.action, 300),
+      narration: str(s?.narration, 600),
+      setting: SETTINGS.includes(s?.setting) ? s.setting : "mountains",
+      camera: CAMERAS.includes(s?.camera) ? s.camera : "static",
+      colors: colors.length === 3 ? colors : ["#1b1f3b", "#53354a", "#e84545"],
+      duration_seconds: clamp(Math.round(Number(s?.duration_seconds) || 6), 4, 10),
+    };
+  }).filter((s) => s.narration);
+  if (!scenes.length) throw { code: "invalid_json" };
+  const language = (str(raw?.language, 5) || "fr").toLowerCase().slice(0, 2);
+  return {
+    id: `f${Date.now().toString(36)}`, createdAt: Date.now(), ...meta,
+    title: str(raw?.title, 120) || "Sans titre", logline: str(raw?.logline, 300), language, scenes,
+  };
+}
+
+const ERRORS = {
+  not_granted: "Vous n'avez pas autorisé cette page à utiliser Claude. Rechargez la page pour qu'elle vous le redemande.",
+  sampling_disabled: "Claude n'est pas disponible pour ce compte.",
+  rate_limited: "Trop de demandes pour l'instant. Patientez une minute avant de réessayer.",
+  session_expired: "Votre session a expiré. Reconnectez-vous à claude.ai.",
+  refused: "Claude a refusé d'écrire ce film. Essayez une autre idée.",
+  invalid_json: "Le scénario reçu était incomplet. Réessayez, éventuellement avec moins de plans.",
+  empty_completion: "Claude n'a rien écrit. Reformulez l'idée et réessayez.",
+  prompt_too_large: "L'idée est trop longue. Raccourcissez-la.",
+};
+function showMessage(kind, text) {
+  const m = $("message");
+  m.className = `msg ${kind}`;
+  m.textContent = text;
+  m.hidden = !text;
+}
+
+let sample = null;
+let generation = null;
+
+async function createFilm(event) {
+  event.preventDefault();
+  const idea = $("idea").value.trim();
+  if (idea.length < 3) { showMessage("warn", "Décrivez votre idée en une phrase au moins."); $("idea").focus(); return; }
+  if (!sample || generation || state.recording) return;
+  const meta = { style: $("style").value, aspect: $("aspect").value, idea };
+  const shots = Number($("shots").value);
+  setPlaying(false);
+  showMessage("", "");
+  $("create").disabled = true;
+  $("status").hidden = false;
+  $("statusText").textContent = "Claude écrit le scénario…";
+  const ctl = new AbortController();
+  const started = performance.now();
+  generation = { ctl };
+  if (meta.aspect === "9:16") { canvas.width = 720; canvas.height = 1280; } else { canvas.width = 1280; canvas.height = 720; }
+  $("screen").classList.toggle("portrait", meta.aspect === "9:16");
+  $("bigplay").hidden = true;
+  const anim = (now) => {
+    if (!generation) return;
+    const s = (now - started) / 1000;
+    drawLeader(s);
+    $("elapsed").textContent = `${Math.floor(s)} s`;
+    requestAnimationFrame(anim);
+  };
+  requestAnimationFrame(anim);
+  try {
+    const raw = await sample.json(buildPrompt(idea, meta.style, shots, $("language").value), {
+      signal: ctl.signal,
+      modelTier: "default",
+      cache: false,
+      onText: ({ text }) => { $("statusText").textContent = `Claude écrit le scénario… ${text.length} caractères`; },
+    });
+    const sp = normalize(raw, shots, meta);
+    saveLibrary([sp, ...loadLibrary()]);
+    generation = null;
+    loadFilm(sp, false);
+    showMessage("ok", `« ${sp.title} » est prêt. Appuyez sur Lecture.`);
+  } catch (e) {
+    generation = null;
+    loadFilm(film || EXAMPLE, false);
+    if (e?.code !== "cancelled") showMessage("err", ERRORS[e?.code] || "La connexion à Claude a été interrompue. Réessayez dans un instant.");
+    if (e?.code === "not_granted" || e?.code === "sampling_disabled") { $("create").hidden = true; }
+  } finally {
+    generation = null;
+    $("status").hidden = true;
+    $("create").disabled = false;
+  }
+}
+
+// ------------------------------------------------------------------ enregistrement vidéo
+
+let downloads = null;
+function recorderType() {
+  if (!window.MediaRecorder) return null;
+  const types = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm", "video/mp4"];
+  return types.find((t) => MediaRecorder.isTypeSupported?.(t)) || null;
+}
+
+function startRecording() {
+  const type = recorderType();
+  if (!type || !downloads || !built || state.recording || generation) return;
+  ensureAudio();
+  let stream;
+  try { stream = canvas.captureStream(30); } catch { showMessage("err", "Ce navigateur ne permet pas d'enregistrer la vidéo."); return; }
+  if (audio.on && audio.dest) {
+    const track = audio.dest.stream.getAudioTracks()[0];
+    if (track) stream.addTrack(track);
+  }
+  const chunks = [];
+  let rec;
+  try { rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 6_000_000 }); }
+  catch { showMessage("err", "Ce navigateur ne permet pas d'enregistrer la vidéo."); return; }
+  rec.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+  rec.onstop = async () => {
+    const blob = new Blob(chunks, { type });
+    const ext = type.startsWith("video/mp4") ? "mp4" : "webm";
+    const name = (film.title || "film").replace(/[\\/:*?"<>|]+/g, "").slice(0, 80) + "." + ext;
+    try {
+      await downloads.save({ filename: name, data: blob });
+      showMessage("ok", `Vidéo « ${name} » enregistrée.`);
+    } catch (e) {
+      if (e?.code !== "declined") showMessage("err", "La vidéo n'a pas pu être enregistrée dans cette vue.");
+    }
+  };
+  state.recording = rec;
+  $("recBadge").hidden = false;
+  for (const id of ["recordBtn", "restart", "scrub", "play", "create"]) $(id).disabled = true;
+  showMessage("warn", "Enregistrement en cours. Gardez cet onglet ouvert et visible jusqu'à la fin du film.");
+  seek(0);
+  rec.start(500);
+  setPlaying(true);
+}
+
+function finishRecording() {
+  const rec = state.recording;
+  state.recording = null;
+  $("recBadge").hidden = true;
+  for (const id of ["recordBtn", "restart", "scrub", "play", "create"]) $(id).disabled = false;
+  showMessage("", "");
+  try { rec.stop(); } catch {}
+}
+
+// ------------------------------------------------------------------ branchements
+
+function togglePlay() {
+  if (!built || generation || state.recording) return;
+  if (!state.playing && state.t >= built.total - 0.01) seek(0);
+  setPlaying(!state.playing);
+}
+$("bigplay").addEventListener("click", togglePlay);
+$("play").addEventListener("click", togglePlay);
+canvas.addEventListener("click", togglePlay);
+$("restart").addEventListener("click", () => { if (!state.recording && !generation) seek(0); });
+$("scrub").addEventListener("input", (e) => { if (!state.recording && !generation) seek((Number(e.target.value) / 1000) * built.total); });
+$("voiceBtn").addEventListener("click", () => {
+  state.voice = !state.voice;
+  $("voiceBtn").setAttribute("aria-pressed", String(state.voice));
+  if (!state.voice) silence();
+});
+$("musicBtn").addEventListener("click", () => {
+  audio.on = !audio.on;
+  $("musicBtn").setAttribute("aria-pressed", String(audio.on));
+  updateMusic(state.item);
+});
+$("recordBtn").addEventListener("click", startRecording);
+$("shots").addEventListener("input", (e) => { $("shotsOut").textContent = e.target.value; });
+$("form").addEventListener("submit", createFilm);
+$("stop").addEventListener("click", () => generation?.ctl.abort());
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Space" && e.target === document.body) { e.preventDefault(); togglePlay(); }
+});
+if (!speech.supported) { $("voiceBtn").disabled = true; $("voiceBtn").setAttribute("aria-pressed", "false"); state.voice = false; }
+else try { speechSynthesis.getVoices(); speechSynthesis.addEventListener?.("voiceschanged", () => {}); } catch {}
+
+loadFilm(EXAMPLE, false);
+document.fonts?.ready.then(() => { if (!state.playing && !generation) drawFrame(state.t); });
+
+(async () => {
+  const claude = window.claude;
+  const [s, d] = await Promise.all([
+    claude?.use ? claude.use("sample").catch(() => null) : null,
+    claude?.use ? claude.use("downloads").catch(() => null) : null,
+  ]);
+  sample = s;
+  downloads = d;
+  if (!sample) { $("noClaude").hidden = false; $("create").disabled = true; }
+  if (downloads && recorderType()) $("recordBtn").hidden = false;
+  else $("recordNote").hidden = true;
+})();
+})();
+</script>
